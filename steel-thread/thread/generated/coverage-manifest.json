@@ -1,0 +1,135 @@
+{
+  "generatedAt": "2026-06-14T18:23:47.844Z",
+  "app": "fundflow",
+  "contract": "shared/a11y-contract.md",
+  "sources": {
+    "trace": "generated/trace.analyst-transfer.json",
+    "openapi": "shared/openapi.yaml",
+    "lastRun": {
+      "status": "passed",
+      "failed": 0
+    }
+  },
+  "ui": {
+    "definition": "§9: covered demonstrated journeys ÷ total demonstrated journeys (journey coverage, not line coverage; undemonstrated excluded)",
+    "demonstratedTotal": 1,
+    "covered": 1,
+    "coveragePct": 100,
+    "demonstratedJourneys": [
+      {
+        "id": "analyst-transfer-happy-path",
+        "role": "analyst",
+        "discoveredBy": "dynamic",
+        "evidence": {
+          "trace": "generated/trace.analyst-transfer.json",
+          "har": "generated/discover.har"
+        },
+        "scenarios": [
+          "analyst-transfer.feature: happy path (caused state change asserted)",
+          "negative-rbac.spec.ts: invalid amount \"abc\"",
+          "negative-rbac.spec.ts: amount \"0\"",
+          "negative-rbac.spec.ts: insufficient funds",
+          "negative-rbac.spec.ts: over approval limit"
+        ],
+        "covered": true
+      }
+    ],
+    "authoredUndemonstrated": [
+      {
+        "id": "supervisor-transfer-over-analyst-limit",
+        "role": "supervisor",
+        "undemonstrated": true,
+        "reason": "RBAC boundary scenario authored from the contract, not produced by a discovery trace",
+        "scenarios": [
+          "negative-rbac.spec.ts: supervisor CAN transfer 15000"
+        ],
+        "covered": true
+      }
+    ],
+    "caveat": "POC denominator is intentionally tiny (1 demonstrated journey). The number proves the loop works end-to-end; it is not a statistically meaningful coverage figure."
+  },
+  "api": {
+    "definition": "§9: endpoints with ≥1 test validating status code AND response schema via zod ÷ documented endpoints",
+    "documentedTotal": 6,
+    "schemaValidated": 0,
+    "coveragePct": 0,
+    "consumerTouched": 4,
+    "endpoints": [
+      {
+        "operationId": "login",
+        "method": "POST",
+        "path": "/api/login",
+        "tags": [
+          "auth"
+        ],
+        "consumerTouched": true,
+        "observedStatus": 200,
+        "schemaValidatingTest": false
+      },
+      {
+        "operationId": "listAccounts",
+        "method": "GET",
+        "path": "/api/accounts",
+        "tags": [
+          "accounts"
+        ],
+        "consumerTouched": true,
+        "observedStatus": 200,
+        "schemaValidatingTest": false
+      },
+      {
+        "operationId": "listPayees",
+        "method": "GET",
+        "path": "/api/payees",
+        "tags": [
+          "payees"
+        ],
+        "consumerTouched": true,
+        "observedStatus": 200,
+        "schemaValidatingTest": false
+      },
+      {
+        "operationId": "createTransfer",
+        "method": "POST",
+        "path": "/api/transfers",
+        "tags": [
+          "transfers"
+        ],
+        "consumerTouched": true,
+        "observedStatus": 201,
+        "schemaValidatingTest": false
+      },
+      {
+        "operationId": "getTransfer",
+        "method": "GET",
+        "path": "/api/transfers/{id}",
+        "tags": [
+          "transfers"
+        ],
+        "consumerTouched": false,
+        "observedStatus": null,
+        "schemaValidatingTest": false
+      },
+      {
+        "operationId": "reset",
+        "method": "POST",
+        "path": "/api/reset",
+        "tags": [
+          "test"
+        ],
+        "consumerTouched": false,
+        "observedStatus": null,
+        "schemaValidatingTest": false
+      }
+    ],
+    "drift": {
+      "usedButUndocumented": [
+        "GET /api/activity"
+      ],
+      "documentedButUnexercised": [
+        "GET /api/transfers/{id}"
+      ]
+    },
+    "gap": "The steel thread ships UI Playwright specs only — no zod schema-validating API tests — so strict §9 API coverage is 0. consumerTouched shows what the journey exercised at runtime; building schema assertions is the next API-coverage step."
+  }
+}

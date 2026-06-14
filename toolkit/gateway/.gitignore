@@ -1,0 +1,6 @@
+node_modules/
+.env
+.env.*
+!.env.example
+# Audit log + ledger are runtime output, not source.
+audit/

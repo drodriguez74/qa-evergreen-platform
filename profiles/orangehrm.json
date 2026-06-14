@@ -1,0 +1,60 @@
+{
+  "name": "orangehrm",
+  "description": "OrangeHRM public demo (live external app) — the first real-stack candidate. Unlike fundflow there is NO authoritative a11y contract: the surface is DISCOVERED from the live DOM. Public demo creds (Admin/admin123) are intentionally public.",
+  "targets": [
+    { "name": "orangehrm", "baseURL": "https://opensource-demo.orangehrmlive.com" }
+  ],
+  "gateway": { "url": "http://localhost:4100" },
+  "journeys": [
+    {
+      "id": "login-happy-path",
+      "role": "admin",
+      "title": "Admin logs in and reaches the dashboard",
+      "entryPath": "/web/index.php/auth/login",
+      "steps": [
+        {
+          "intent": "Sign in as Admin",
+          "gating": true,
+          "actions": [
+            { "kind": "fill", "target": { "role": "textbox", "name": "Username" }, "value": "Admin" },
+            { "kind": "fill", "target": { "role": "textbox", "name": "Password" }, "value": "admin123" },
+            { "kind": "click", "target": { "role": "button", "name": "Login" } }
+          ],
+          "causedStateChange": [
+            { "role": "heading", "name": "Dashboard" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pim-navigate",
+      "role": "admin",
+      "title": "Admin logs in and navigates to PIM Employee Information",
+      "entryPath": "/web/index.php/auth/login",
+      "steps": [
+        {
+          "intent": "Sign in as Admin",
+          "gating": true,
+          "actions": [
+            { "kind": "fill", "target": { "role": "textbox", "name": "Username" }, "value": "Admin" },
+            { "kind": "fill", "target": { "role": "textbox", "name": "Password" }, "value": "admin123" },
+            { "kind": "click", "target": { "role": "button", "name": "Login" } }
+          ],
+          "causedStateChange": [
+            { "role": "heading", "name": "Dashboard" }
+          ]
+        },
+        {
+          "intent": "Navigate to the PIM module via the top-nav link",
+          "gating": true,
+          "actions": [
+            { "kind": "click", "target": { "role": "link", "name": "PIM" } }
+          ],
+          "causedStateChange": [
+            { "role": "heading", "name": "Employee Information" }
+          ]
+        }
+      ]
+    }
+  ]
+}

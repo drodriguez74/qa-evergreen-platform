@@ -1,0 +1,21 @@
+{
+  "_comment": "Synthetic data only (Rule 7). No real accounts, names, or card data. Seed state for the mock API; reset via POST /api/reset.",
+  "users": [
+    { "username": "analyst",    "password": "demo1234", "role": "analyst",    "displayName": "Avery Analyst",    "approvalLimit": 10000 },
+    { "username": "supervisor", "password": "demo1234", "role": "supervisor", "displayName": "Sam Supervisor",   "approvalLimit": null }
+  ],
+  "accounts": [
+    { "id": "ACC-1001", "name": "Operating", "balance": 50000.00 },
+    { "id": "ACC-1002", "name": "Payroll",   "balance": 12500.00 },
+    { "id": "ACC-1003", "name": "Reserve",   "balance": 250000.00 }
+  ],
+  "payees": [
+    { "id": "PAYEE-9001", "name": "Acme Supplies" },
+    { "id": "PAYEE-9002", "name": "Globex Payroll" },
+    { "id": "PAYEE-9003", "name": "Initech Services" }
+  ],
+  "recentActivity": [
+    { "id": "TXN-1000", "date": "2026-06-09", "payee": "Acme Supplies",  "amount": 1200.00, "from": "ACC-1001" },
+    { "id": "TXN-1001", "date": "2026-06-08", "payee": "Globex Payroll", "amount": 8400.00, "from": "ACC-1002" }
+  ]
+}

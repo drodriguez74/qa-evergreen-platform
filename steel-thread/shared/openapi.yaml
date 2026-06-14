@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: FundFlow Mock API
+  version: 1.0.0
+  description: >
+    Money-movement mock API for the QA Evergreen steel thread. Synthetic data only.
+    In-memory state, resettable. Both the React and Angular front-ends call this same API.
+servers:
+  - url: http://localhost:4000
+paths:
+  /api/login:
+    post:
+      operationId: login
+      summary: Authenticate a user
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LoginResponse' }
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /api/accounts:
+    get:
+      operationId: listAccounts
+      summary: List accounts for the signed-in user
+      tags: [accounts]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Account' }
+  /api/payees:
+    get:
+      operationId: listPayees
+      summary: List payees
+      tags: [payees]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Payees
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Payee' }
+  /api/transfers:
+    post:
+      operationId: createTransfer
+      summary: Initiate a transfer (the money-moving action)
+      tags: [transfers]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TransferRequest' }
+      responses:
+        '201':
+          description: Transfer completed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Receipt' }
+        '422':
+          description: >
+            Business-rule rejection. `code` is one of INVALID_AMOUNT,
+            INSUFFICIENT_FUNDS, OVER_APPROVAL_LIMIT.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /api/transfers/{id}:
+    get:
+      operationId: getTransfer
+      summary: Fetch a transfer receipt by id
+      tags: [transfers]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Receipt
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Receipt' }
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /api/reset:
+    post:
+      operationId: reset
+      summary: Reset in-memory state to fixtures (test hook)
+      tags: [test]
+      responses:
+        '204': { description: Reset done }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string }
+        password: { type: string }
+    LoginResponse:
+      type: object
+      required: [token, role, displayName]
+      properties:
+        token:       { type: string }
+        role:        { type: string, enum: [analyst, supervisor] }
+        displayName: { type: string }
+        approvalLimit: { type: number, nullable: true }
+    Account:
+      type: object
+      required: [id, name, balance]
+      properties:
+        id:      { type: string }
+        name:    { type: string }
+        balance: { type: number }
+    Payee:
+      type: object
+      required: [id, name]
+      properties:
+        id:   { type: string }
+        name: { type: string }
+    TransferRequest:
+      type: object
+      required: [fromAccountId, payeeId, amount]
+      properties:
+        fromAccountId: { type: string }
+        payeeId:       { type: string }
+        amount:        { type: number }
+        memo:          { type: string }
+    Receipt:
+      type: object
+      required: [transactionId, status, fromAccountId, payeeId, amount, newBalance]
+      properties:
+        transactionId: { type: string }
+        status:        { type: string, enum: [completed] }
+        fromAccountId: { type: string }
+        payeeId:       { type: string }
+        amount:        { type: number }
+        memo:          { type: string }
+        newBalance:    { type: number }
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:    { type: string }
+        message: { type: string }

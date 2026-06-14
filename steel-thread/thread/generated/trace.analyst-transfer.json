@@ -1,0 +1,643 @@
+{
+  "journeyId": "analyst-transfer-happy-path",
+  "role": "analyst",
+  "title": "Analyst initiates and confirms a transfer (happy path)",
+  "source": "agent-browser",
+  "contract": "shared/a11y-contract.md",
+  "capturedAt": "2026-06-12T02:54:05.144Z",
+  "reactBaseUrl": "http://localhost:5173",
+  "apiCalls": [
+    {
+      "method": "POST",
+      "url": "http://localhost:4000/api/login",
+      "status": 200
+    },
+    {
+      "method": "OPTIONS",
+      "url": "http://localhost:4000/api/login",
+      "status": 204
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:4000/api/accounts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:4000/api/activity",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:4000/api/accounts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:4000/api/activity",
+      "status": 200
+    },
+    {
+      "method": "OPTIONS",
+      "url": "http://localhost:4000/api/accounts",
+      "status": 204
+    },
+    {
+      "method": "OPTIONS",
+      "url": "http://localhost:4000/api/activity",
+      "status": 204
+    },
+    {
+      "method": "OPTIONS",
+      "url": "http://localhost:4000/api/accounts",
+      "status": 204
+    },
+    {
+      "method": "OPTIONS",
+      "url": "http://localhost:4000/api/activity",
+      "status": 204
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:4000/api/accounts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:4000/api/payees",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:4000/api/accounts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:4000/api/payees",
+      "status": 200
+    },
+    {
+      "method": "OPTIONS",
+      "url": "http://localhost:4000/api/payees",
+      "status": 204
+    },
+    {
+      "method": "OPTIONS",
+      "url": "http://localhost:4000/api/payees",
+      "status": 204
+    },
+    {
+      "method": "OPTIONS",
+      "url": "http://localhost:4000/api/transfers",
+      "status": 204
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:4000/api/transfers",
+      "status": 201
+    }
+  ],
+  "steps": [
+    {
+      "intent": "Sign in as the analyst",
+      "route": "/login",
+      "assertions": [],
+      "actions": [
+        {
+          "kind": "fill",
+          "target": {
+            "role": "textbox",
+            "name": "Username"
+          },
+          "value": "analyst"
+        },
+        {
+          "kind": "fill",
+          "target": {
+            "role": "textbox",
+            "name": "Password"
+          },
+          "value": "demo1234"
+        },
+        {
+          "kind": "click",
+          "target": {
+            "role": "button",
+            "name": "Sign in"
+          }
+        }
+      ],
+      "snapshot": {
+        "success": true,
+        "data": {
+          "origin": "http://localhost:5173/dashboard",
+          "refs": {
+            "e1": {
+              "name": "",
+              "role": "generic"
+            },
+            "e10": {
+              "name": "Payroll",
+              "role": "cell"
+            },
+            "e11": {
+              "name": "$12,500.00",
+              "role": "cell"
+            },
+            "e12": {
+              "name": "Reserve",
+              "role": "cell"
+            },
+            "e13": {
+              "name": "$250,000.00",
+              "role": "cell"
+            },
+            "e14": {
+              "name": "2026-06-09",
+              "role": "cell"
+            },
+            "e15": {
+              "name": "Acme Supplies",
+              "role": "cell"
+            },
+            "e16": {
+              "name": "$1,200.00",
+              "role": "cell"
+            },
+            "e17": {
+              "name": "2026-06-08",
+              "role": "cell"
+            },
+            "e18": {
+              "name": "Globex Payroll",
+              "role": "cell"
+            },
+            "e19": {
+              "name": "$8,400.00",
+              "role": "cell"
+            },
+            "e2": {
+              "name": "Initiate Transfer",
+              "role": "button"
+            },
+            "e20": {
+              "name": "Account",
+              "role": "columnheader"
+            },
+            "e21": {
+              "name": "Balance",
+              "role": "columnheader"
+            },
+            "e22": {
+              "name": "Date",
+              "role": "columnheader"
+            },
+            "e23": {
+              "name": "Payee",
+              "role": "columnheader"
+            },
+            "e24": {
+              "name": "Amount",
+              "role": "columnheader"
+            },
+            "e3": {
+              "name": "Sign out",
+              "role": "button"
+            },
+            "e4": {
+              "name": "",
+              "role": "generic"
+            },
+            "e5": {
+              "name": "Dashboard",
+              "role": "heading"
+            },
+            "e6": {
+              "name": "Account Balances",
+              "role": "heading"
+            },
+            "e7": {
+              "name": "Recent Activity",
+              "role": "heading"
+            },
+            "e8": {
+              "name": "Operating",
+              "role": "cell"
+            },
+            "e9": {
+              "name": "$50,000.00",
+              "role": "cell"
+            }
+          },
+          "snapshot": "- generic \"☰DashboardSigned in as Avery AnalystAccount BalancesAccountBalanceOperating$50,000.00Payroll$12,500.\" [ref=e1] clickable [onclick]\n  - generic \"☰\" [ref=e4] clickable [cursor:pointer, onclick]\n  - heading \"Dashboard\" [level=1, ref=e5]\n  - heading \"Account Balances\" [level=2, ref=e6]\n  - columnheader \"Account\" [ref=e20]\n  - columnheader \"Balance\" [ref=e21]\n  - cell \"Operating\" [ref=e8]\n  - cell \"$50,000.00\" [ref=e9]\n  - cell \"Payroll\" [ref=e10]\n  - cell \"$12,500.00\" [ref=e11]\n  - cell \"Reserve\" [ref=e12]\n  - cell \"$250,000.00\" [ref=e13]\n  - heading \"Recent Activity\" [level=2, ref=e7]\n  - columnheader \"Date\" [ref=e22]\n  - columnheader \"Payee\" [ref=e23]\n  - columnheader \"Amount\" [ref=e24]\n  - cell \"2026-06-09\" [ref=e14]\n  - cell \"Acme Supplies\" [ref=e15]\n  - cell \"$1,200.00\" [ref=e16]\n  - cell \"2026-06-08\" [ref=e17]\n  - cell \"Globex Payroll\" [ref=e18]\n  - cell \"$8,400.00\" [ref=e19]\n  - button \"Initiate Transfer\" [ref=e2]\n  - button \"Sign out\" [ref=e3]"
+        },
+        "error": null
+      },
+      "apiCalls": [
+        {
+          "method": "POST",
+          "url": "http://localhost:4000/api/login",
+          "status": 200
+        },
+        {
+          "method": "OPTIONS",
+          "url": "http://localhost:4000/api/login",
+          "status": 204
+        }
+      ]
+    },
+    {
+      "intent": "Land on the dashboard and start a transfer",
+      "route": "/dashboard",
+      "assertions": [
+        {
+          "role": "heading",
+          "level": 1,
+          "name": "Dashboard"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "click",
+          "target": {
+            "role": "button",
+            "name": "Initiate Transfer"
+          }
+        }
+      ],
+      "snapshot": {
+        "success": true,
+        "data": {
+          "origin": "http://localhost:5173/transfer",
+          "refs": {
+            "e1": {
+              "name": "",
+              "role": "generic"
+            },
+            "e10": {
+              "name": "Reserve",
+              "role": "option"
+            },
+            "e11": {
+              "name": "Acme Supplies",
+              "role": "option"
+            },
+            "e12": {
+              "name": "Globex Payroll",
+              "role": "option"
+            },
+            "e13": {
+              "name": "Initech Services",
+              "role": "option"
+            },
+            "e2": {
+              "name": "Initiate Transfer",
+              "role": "heading"
+            },
+            "e3": {
+              "name": "From account",
+              "role": "combobox"
+            },
+            "e4": {
+              "name": "Payee",
+              "role": "combobox"
+            },
+            "e5": {
+              "name": "Amount",
+              "role": "textbox"
+            },
+            "e6": {
+              "name": "Memo",
+              "role": "textbox"
+            },
+            "e7": {
+              "name": "Continue to review",
+              "role": "button"
+            },
+            "e8": {
+              "name": "Operating",
+              "role": "option"
+            },
+            "e9": {
+              "name": "Payroll",
+              "role": "option"
+            }
+          },
+          "snapshot": "- generic \"Initiate TransferFrom accountOperatingPayrollReservePayeeAcme SuppliesGlobex PayrollInitech Services\" [ref=e1] clickable [onclick]\n  - heading \"Initiate Transfer\" [level=1, ref=e2]\n  - combobox \"From account\" [expanded=false, ref=e3]: Operating\n    - option \"Operating\" [selected, ref=e8]\n    - option \"Payroll\" [ref=e9]\n    - option \"Reserve\" [ref=e10]\n  - combobox \"Payee\" [expanded=false, ref=e4]: Acme Supplies\n    - option \"Acme Supplies\" [selected, ref=e11]\n    - option \"Globex Payroll\" [ref=e12]\n    - option \"Initech Services\" [ref=e13]\n  - textbox \"Amount\" [ref=e5]\n  - textbox \"Memo\" [ref=e6]\n  - button \"Continue to review\" [ref=e7]"
+        },
+        "error": null
+      },
+      "apiCalls": [
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 200
+        },
+        {
+          "method": "OPTIONS",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 204
+        },
+        {
+          "method": "OPTIONS",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 204
+        },
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "intent": "Fill in the transfer details and continue to review",
+      "route": "/transfer",
+      "assertions": [],
+      "actions": [
+        {
+          "kind": "select",
+          "target": {
+            "role": "combobox",
+            "name": "From account"
+          },
+          "value": "Operating"
+        },
+        {
+          "kind": "select",
+          "target": {
+            "role": "combobox",
+            "name": "Payee"
+          },
+          "value": "Acme Supplies"
+        },
+        {
+          "kind": "fill",
+          "target": {
+            "role": "textbox",
+            "name": "Amount"
+          },
+          "value": "2500"
+        },
+        {
+          "kind": "fill",
+          "target": {
+            "role": "textbox",
+            "name": "Memo"
+          },
+          "value": "Q2 invoice"
+        },
+        {
+          "kind": "click",
+          "target": {
+            "role": "button",
+            "name": "Continue to review"
+          }
+        }
+      ],
+      "snapshot": {
+        "success": true,
+        "data": {
+          "origin": "http://localhost:5173/transfer/review",
+          "refs": {
+            "e1": {
+              "name": "",
+              "role": "generic"
+            },
+            "e2": {
+              "name": "Review & Confirm",
+              "role": "heading"
+            },
+            "e3": {
+              "name": "Confirm transfer",
+              "role": "button"
+            },
+            "e4": {
+              "name": "Back",
+              "role": "button"
+            }
+          },
+          "snapshot": "- generic \"Review & ConfirmFrom: OperatingPayee: Acme SuppliesAmount: $2,500.00Memo: Q2 invoiceConfirm transfer\" [ref=e1] clickable [onclick]\n  - heading \"Review & Confirm\" [level=1, ref=e2]\n  - button \"Confirm transfer\" [ref=e3]\n  - button \"Back\" [ref=e4]"
+        },
+        "error": null
+      },
+      "apiCalls": [
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 200
+        },
+        {
+          "method": "OPTIONS",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 204
+        },
+        {
+          "method": "OPTIONS",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 204
+        },
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/payees",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/accounts",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://localhost:4000/api/payees",
+          "status": 200
+        },
+        {
+          "method": "OPTIONS",
+          "url": "http://localhost:4000/api/payees",
+          "status": 204
+        },
+        {
+          "method": "OPTIONS",
+          "url": "http://localhost:4000/api/payees",
+          "status": 204
+        }
+      ]
+    },
+    {
+      "intent": "Review the transfer and confirm it (the money gate)",
+      "route": "/transfer/review",
+      "assertions": [
+        {
+          "role": "text",
+          "name": "Amount: $2,500.00"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "click",
+          "target": {
+            "role": "button",
+            "name": "Confirm transfer"
+          }
+        }
+      ],
+      "snapshot": {
+        "success": true,
+        "data": {
+          "origin": "http://localhost:5173/transfer/receipt/TXN-34255",
+          "refs": {
+            "e1": {
+              "name": "",
+              "role": "generic"
+            },
+            "e2": {
+              "name": "Transfer Complete",
+              "role": "heading"
+            },
+            "e3": {
+              "name": "Back to dashboard",
+              "role": "button"
+            }
+          },
+          "snapshot": "- generic \"Transfer CompleteTransaction ID: TXN-34255New balance: $47,500.00Back to dashboard\" [ref=e1] clickable [onclick]\n  - heading \"Transfer Complete\" [level=1, ref=e2]\n  - button \"Back to dashboard\" [ref=e3]"
+        },
+        "error": null
+      },
+      "causedStateChange": {
+        "note": "Diff of post-action vs pre-action snapshot for the gating step. The compiler must assert at least one added node (assertion-bar.md).",
+        "preSnapshot": {
+          "success": true,
+          "data": {
+            "origin": "http://localhost:5173/transfer/review",
+            "refs": {
+              "e1": {
+                "name": "",
+                "role": "generic"
+              },
+              "e2": {
+                "name": "Review & Confirm",
+                "role": "heading"
+              },
+              "e3": {
+                "name": "Confirm transfer",
+                "role": "button"
+              },
+              "e4": {
+                "name": "Back",
+                "role": "button"
+              }
+            },
+            "snapshot": "- generic \"Review & ConfirmFrom: OperatingPayee: Acme SuppliesAmount: $2,500.00Memo: Q2 invoiceConfirm transfer\" [ref=e1] clickable [onclick]\n  - heading \"Review & Confirm\" [level=1, ref=e2]\n  - button \"Confirm transfer\" [ref=e3]\n  - button \"Back\" [ref=e4]"
+          },
+          "error": null
+        },
+        "postSnapshot": {
+          "success": true,
+          "data": {
+            "origin": "http://localhost:5173/transfer/receipt/TXN-34255",
+            "refs": {
+              "e1": {
+                "name": "",
+                "role": "generic"
+              },
+              "e2": {
+                "name": "Transfer Complete",
+                "role": "heading"
+              },
+              "e3": {
+                "name": "Back to dashboard",
+                "role": "button"
+              }
+            },
+            "snapshot": "- generic \"Transfer CompleteTransaction ID: TXN-34255New balance: $47,500.00Back to dashboard\" [ref=e1] clickable [onclick]\n  - heading \"Transfer Complete\" [level=1, ref=e2]\n  - button \"Back to dashboard\" [ref=e3]"
+          },
+          "error": null
+        },
+        "expectedAddedNodes": [
+          {
+            "role": "heading",
+            "level": 1,
+            "name": "Transfer Complete"
+          },
+          {
+            "role": "text",
+            "namePattern": "Transaction ID:\\s*\\S+"
+          }
+        ]
+      },
+      "apiCalls": [
+        {
+          "method": "OPTIONS",
+          "url": "http://localhost:4000/api/transfers",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "url": "http://localhost:4000/api/transfers",
+          "status": 201
+        }
+      ]
+    },
+    {
+      "intent": "Arrive on the receipt; the transfer is complete",
+      "route": "/transfer/receipt/:id",
+      "assertions": [
+        {
+          "role": "heading",
+          "level": 1,
+          "name": "Transfer Complete"
+        },
+        {
+          "role": "text",
+          "namePattern": "Transaction ID:\\s*\\S+"
+        }
+      ],
+      "actions": [],
+      "snapshot": {
+        "success": true,
+        "data": {
+          "origin": "http://localhost:5173/transfer/receipt/TXN-34255",
+          "refs": {
+            "e1": {
+              "name": "",
+              "role": "generic"
+            },
+            "e2": {
+              "name": "Transfer Complete",
+              "role": "heading"
+            },
+            "e3": {
+              "name": "Back to dashboard",
+              "role": "button"
+            }
+          },
+          "snapshot": "- generic \"Transfer CompleteTransaction ID: TXN-34255New balance: $47,500.00Back to dashboard\" [ref=e1] clickable [onclick]\n  - heading \"Transfer Complete\" [level=1, ref=e2]\n  - button \"Back to dashboard\" [ref=e3]"
+        },
+        "error": null
+      },
+      "apiCalls": []
+    }
+  ]
+}

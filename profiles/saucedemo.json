@@ -1,0 +1,73 @@
+{
+  "name": "saucedemo",
+  "description": "Auto-scaffolded by profile_init (install-and-crawl) from https://www.saucedemo.com on 2026-06-14. Surface DISCOVERED from the live a11y tree (no authoritative contract).",
+  "targets": [
+    {
+      "name": "saucedemo",
+      "baseURL": "https://www.saucedemo.com"
+    }
+  ],
+  "gateway": {
+    "url": "http://localhost:4100"
+  },
+  "contract": null,
+  "journeys": [
+    {
+      "id": "login-happy-path",
+      "role": "standard_user",
+      "title": "SauceDemo Login → Products Page",
+      "entryPath": "/",
+      "steps": [
+        {
+          "intent": "Sign in as standard_user",
+          "gating": true,
+          "actions": [
+            {
+              "kind": "fill",
+              "target": {
+                "role": "textbox",
+                "name": "Username"
+              },
+              "value": "standard_user"
+            },
+            {
+              "kind": "fill",
+              "target": {
+                "role": "textbox",
+                "name": "Password"
+              },
+              "value": "secret_sauce"
+            },
+            {
+              "kind": "click",
+              "target": {
+                "role": "button",
+                "name": "Login"
+              }
+            }
+          ],
+          "causedStateChange": [
+            {
+              "role": "button",
+              "name": "Open Menu"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_meta": {
+    "scaffoldedBy": "profile_init",
+    "warnings": [],
+    "gateway": {
+      "used": true,
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-6",
+      "proposed": {
+        "role": "button",
+        "name": "Open Menu"
+      },
+      "reason": "The \"Open Menu\" button is part of the primary navigation header that is rendered exclusively on authenticated pages in SauceDemo. It is a stable, singular, page-identity element that appears immediately after a successful login — unlike product links or sort options which are incidental list items that could vary. Asserting its presence confirms the app has transitioned from the public login screen into the authenticated shell, making it the most reliable gate for a post-login state change assertion."
+    }
+  }
+}

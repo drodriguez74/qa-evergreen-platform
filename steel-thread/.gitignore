@@ -1,0 +1,19 @@
+# Secrets — NEVER commit. This repo is public on GitHub.
+.env
+.env.*
+!.env.example
+
+# Steel-thread build/test artifacts — source is tracked, generated output is not.
+**/node_modules/
+apps/react/dist/
+apps/angular/dist/
+apps/angular/.angular/
+thread/test-results/
+thread/playwright-report/
+thread/generated/discover.har
+# Metrics harness scratch (the manifests in generated/ are tracked deliverables;
+# these are per-run scratch dirs the AI-draft harness creates and restores from).
+thread/metrics/.backup/
+thread/metrics/runs/
+**/*.tsbuildinfo
+.DS_Store

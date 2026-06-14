@@ -1,0 +1,1364 @@
+{
+  "generatedAt": "2026-06-14T18:22:18.042Z",
+  "metric": "Healer false-positive rate (§21.5 #2)",
+  "profile": "fundflow",
+  "candidateSource": "contract",
+  "mode": "gateway fast tier",
+  "confidenceThreshold": 0.9,
+  "seeded": 68,
+  "falsePositives": 0,
+  "healerFalsePositiveRatePct": 0,
+  "correct": 46,
+  "missed": 22,
+  "recallOnHealablePct": 65.1,
+  "trueNegativeOnDecoysPct": 100,
+  "appliedAccuracyPct": 100,
+  "caveat": "Synthetic single-app breakages. The threshold + false-positive number are real; a production rate needs drift seeded on real screens and the live a11y tree as the candidate pool.",
+  "results": [
+    {
+      "route": "/login",
+      "category": "synonym",
+      "broken": {
+        "role": "heading",
+        "name": "Log in to FundFlow"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Sign in to FundFlow"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Sign in to FundFlow",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The heading role matches exactly, and the accessible name changed from \"Log in\" to \"Sign in\" while referring to the same FundFlow authentication screen, indicating the same control with updated text."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/login",
+      "category": "truncation",
+      "broken": {
+        "role": "heading",
+        "name": "Sign"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Sign in to FundFlow"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Sign in to FundFlow",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original locator searches for a heading with name \"Sign\", and the only heading available is \"Sign in to FundFlow\", which clearly starts with \"Sign\" and matches the intended target despite the accessible name being longer than expected."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/login",
+      "category": "case",
+      "broken": {
+        "role": "heading",
+        "name": "SIGN IN TO FUNDFLOW"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Sign in to FundFlow"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Sign in to FundFlow",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original locator searches for a heading with name \"SIGN IN TO FUNDFLOW\", which matches the exposed heading \"Sign in to FundFlow\" - the only difference is capitalization/casing, indicating a text normalization drift rather than a control change."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/login",
+      "category": "role-swap",
+      "broken": {
+        "role": "button",
+        "name": "Sign in to FundFlow"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Sign in to FundFlow"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Sign in",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original locator targets a button with name 'Sign in to FundFlow', but the current button has been renamed to 'Sign in' - same control with only minor accessible name drift."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/login",
+      "category": "case",
+      "broken": {
+        "role": "textbox",
+        "name": "USERNAME"
+      },
+      "groundTruth": {
+        "role": "textbox",
+        "name": "Username"
+      },
+      "proposal": {
+        "role": "textbox",
+        "name": "Username",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a textbox with name 'USERNAME' (uppercase), and the available node is a textbox with name 'Username' (title case) - this is a clear match with only a capitalization difference, representing the same username input field."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/login",
+      "category": "role-swap",
+      "broken": {
+        "role": "combobox",
+        "name": "Username"
+      },
+      "groundTruth": {
+        "role": "textbox",
+        "name": "Username"
+      },
+      "proposal": {
+        "role": "textbox",
+        "name": "Username",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name \"Username\" matches exactly, but the role changed from combobox to textbox, indicating the control was likely refactored from a dropdown to a simple text input."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/login",
+      "category": "case",
+      "broken": {
+        "role": "textbox",
+        "name": "PASSWORD"
+      },
+      "groundTruth": {
+        "role": "textbox",
+        "name": "Password"
+      },
+      "proposal": {
+        "role": "textbox",
+        "name": "Password",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original locator searched for a textbox with name 'PASSWORD' (all caps), and the current screen has a textbox with name 'Password' (title case) - this is clearly the same control with only an accessible name capitalization change."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/login",
+      "category": "role-swap",
+      "broken": {
+        "role": "combobox",
+        "name": "Password"
+      },
+      "groundTruth": {
+        "role": "textbox",
+        "name": "Password"
+      },
+      "proposal": {
+        "role": "textbox",
+        "name": "Password",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name matches exactly (\"Password\"), but the role changed from combobox to textbox, indicating the control was refactored or the semantic role was corrected."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/login",
+      "category": "synonym",
+      "broken": {
+        "role": "button",
+        "name": "Log in"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Sign in"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Sign in",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button's role matches exactly, and \"Sign in\" is a clear semantic equivalent to \"Log in\" for the same action on a login screen."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/login",
+      "category": "truncation",
+      "broken": {
+        "role": "button",
+        "name": "Sign"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Sign in"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Sign in",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a button with name 'Sign', and the available button has name 'Sign in', which is clearly the same control with an accessible name drift (partial vs. full text)."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/login",
+      "category": "case",
+      "broken": {
+        "role": "button",
+        "name": "SIGN IN"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Sign in"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Sign in",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a button with name 'SIGN IN' (uppercase), and the current screen has a button with name 'Sign in' (title case), which is clearly the same control with only a case difference in the accessible name."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/login",
+      "category": "role-swap",
+      "broken": {
+        "role": "link",
+        "name": "Sign in"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Sign in"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Sign in",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searched for a link with name \"Sign in\", but the screen now exposes a button with name \"Sign in\" - this is clearly the intended target with a role drift from link to button."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/login",
+      "category": "unhealable",
+      "broken": {
+        "role": "button",
+        "name": "Frobnicate the gizmo"
+      },
+      "groundTruth": null,
+      "proposal": {
+        "role": "button",
+        "name": "Sign in",
+        "confidence": 0.15,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The only button available is \"Sign in\" but it has a completely different accessible name than \"Frobnicate the gizmo\", suggesting a different control or significant context drift rather than a simple accessible-name drift."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "case",
+      "broken": {
+        "role": "heading",
+        "name": "DASHBOARD"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Dashboard"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Dashboard",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a heading with name 'DASHBOARD' (uppercase), and the available heading \"Dashboard\" matches perfectly in role and intent, with only a case difference in the accessible name."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "role-swap",
+      "broken": {
+        "role": "button",
+        "name": "Dashboard"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Dashboard"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Dashboard",
+        "confidence": 0.35,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name matches the original locator, but the role has drifted from button to heading, making this a weak equivalent at best."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/dashboard",
+      "category": "truncation",
+      "broken": {
+        "role": "heading",
+        "name": "Account"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Account Balances"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Account Balances",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The locator searches for a heading with name \"Account\" and \"Account Balances\" is the closest semantic match with the same role, likely representing the same control with a slightly different accessible name."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/dashboard",
+      "category": "case",
+      "broken": {
+        "role": "heading",
+        "name": "ACCOUNT BALANCES"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Account Balances"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Account Balances",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for 'ACCOUNT BALANCES' in uppercase, and the available node 'Account Balances' matches the same heading role with identical semantic content, differing only in capitalization."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "role-swap",
+      "broken": {
+        "role": "button",
+        "name": "Account Balances"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Account Balances"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Account Balances",
+        "confidence": 0.55,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name \"Account Balances\" matches exactly, but the role changed from button to heading, suggesting a structural refactoring of the UI element."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/dashboard",
+      "category": "truncation",
+      "broken": {
+        "role": "heading",
+        "name": "Recent"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Recent Activity"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Recent Activity",
+        "confidence": 0.92,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The heading with name \"Recent Activity\" is the intended target, as it contains the substring \"Recent\" from the original locator and maintains the heading role."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "case",
+      "broken": {
+        "role": "heading",
+        "name": "RECENT ACTIVITY"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Recent Activity"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Recent Activity",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a heading with name 'RECENT ACTIVITY' (uppercase), and the current DOM exposes a heading with name 'Recent Activity' (title case), which is clearly the same control with only a text casing difference."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "role-swap",
+      "broken": {
+        "role": "button",
+        "name": "Recent Activity"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Recent Activity"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Recent Activity",
+        "confidence": 0.7,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name \"Recent Activity\" matches exactly, but the role has drifted from button to heading, suggesting the UI was restructured but the same content is still present."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/dashboard",
+      "category": "synonym",
+      "broken": {
+        "role": "button",
+        "name": "Start Transfer"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Initiate Transfer"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Initiate Transfer",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches exactly, and \"Initiate Transfer\" is clearly the renamed equivalent of \"Start Transfer\" (same functional purpose with slightly different wording)."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "truncation",
+      "broken": {
+        "role": "button",
+        "name": "Initiate"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Initiate Transfer"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Initiate Transfer",
+        "confidence": 0.9,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a button named \"Initiate\", and \"Initiate Transfer\" is the only button whose name starts with \"Initiate\", indicating a clear accessible-name drift where the name was expanded or clarified."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "case",
+      "broken": {
+        "role": "button",
+        "name": "INITIATE TRANSFER"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Initiate Transfer"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Initiate Transfer",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches exactly, and the accessible name differs only in capitalization ('INITIATE TRANSFER' vs 'Initiate Transfer'), indicating a styling change rather than a functional change to the same control."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "role-swap",
+      "broken": {
+        "role": "link",
+        "name": "Initiate Transfer"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Initiate Transfer"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Initiate Transfer",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name matches exactly, but the role has changed from 'link' to 'button', indicating a role drift in the same control."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "synonym",
+      "broken": {
+        "role": "button",
+        "name": "Log out"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Sign out"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Sign out",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches, and \"Sign out\" is a semantic equivalent to \"Log out\" representing the same logout action with different terminology."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "truncation",
+      "broken": {
+        "role": "button",
+        "name": "Sign"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Sign out"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Sign out",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a button named 'Sign', and 'Sign out' is the only button whose name starts with 'Sign', indicating a likely name truncation or change in the accessible name."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/dashboard",
+      "category": "case",
+      "broken": {
+        "role": "button",
+        "name": "SIGN OUT"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Sign out"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Sign out",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches exactly, and \"Sign out\" is the same control as \"SIGN OUT\" with only a case difference in the accessible name."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "role-swap",
+      "broken": {
+        "role": "link",
+        "name": "Sign out"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Sign out"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Sign out",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name matches exactly, but the role changed from 'link' to 'button', likely due to semantic HTML refactoring of the same control."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/dashboard",
+      "category": "unhealable",
+      "broken": {
+        "role": "button",
+        "name": "Frobnicate the gizmo"
+      },
+      "groundTruth": null,
+      "proposal": {
+        "role": "button",
+        "name": "Initiate Transfer",
+        "confidence": 0.35,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "No button on the current screen matches the original name \"Frobnicate the gizmo\"; both available buttons have completely different labels, so this is an abstention with low confidence."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "synonym",
+      "broken": {
+        "role": "heading",
+        "name": "Start Transfer"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Initiate Transfer"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Initiate Transfer",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The role matches exactly (heading), and the accessible name changed from \"Start Transfer\" to \"Initiate Transfer\", indicating this is the same control with updated text content."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "truncation",
+      "broken": {
+        "role": "heading",
+        "name": "Initiate"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Initiate Transfer"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Initiate Transfer",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The heading role matches exactly, and the accessible name changed from \"Initiate\" to \"Initiate Transfer\", indicating a text content expansion of the same heading element."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "case",
+      "broken": {
+        "role": "heading",
+        "name": "INITIATE TRANSFER"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Initiate Transfer"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Initiate Transfer",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searched for a heading with name 'INITIATE TRANSFER' (uppercase), and the screen exposes a heading with name 'Initiate Transfer' (mixed case), which is the same control with only a case difference in the accessible name."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "role-swap",
+      "broken": {
+        "role": "button",
+        "name": "Initiate Transfer"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Initiate Transfer"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Continue to review",
+        "confidence": 0.7,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches, and \"Continue to review\" appears to be the logical next action button after \"Initiate Transfer\", suggesting a name change rather than a complete control replacement."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer",
+      "category": "truncation",
+      "broken": {
+        "role": "combobox",
+        "name": "From"
+      },
+      "groundTruth": {
+        "role": "combobox",
+        "name": "From account"
+      },
+      "proposal": {
+        "role": "combobox",
+        "name": "From account",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original locator searched for a combobox with name \"From\", which now appears as \"From account\" - same control, only the accessible name has been extended with \"account\"."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "case",
+      "broken": {
+        "role": "combobox",
+        "name": "FROM ACCOUNT"
+      },
+      "groundTruth": {
+        "role": "combobox",
+        "name": "From account"
+      },
+      "proposal": {
+        "role": "combobox",
+        "name": "From account",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searched for a combobox with name 'FROM ACCOUNT' (uppercase), and the screen exposes a combobox with name 'From account' (title case) which is the same control with only a capitalization difference in the accessible name."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "role-swap",
+      "broken": {
+        "role": "textbox",
+        "name": "From account"
+      },
+      "groundTruth": {
+        "role": "combobox",
+        "name": "From account"
+      },
+      "proposal": {
+        "role": "combobox",
+        "name": "From account",
+        "confidence": 0.8,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The control with accessible name \"From account\" changed from a textbox role to a combobox role, likely due to enhanced interaction capabilities."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer",
+      "category": "case",
+      "broken": {
+        "role": "combobox",
+        "name": "PAYEE"
+      },
+      "groundTruth": {
+        "role": "combobox",
+        "name": "Payee"
+      },
+      "proposal": {
+        "role": "combobox",
+        "name": "Payee",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original locator targets a combobox with name 'PAYEE' (uppercase), and the current accessible node is a combobox with name 'Payee' (title case), representing the same control with only a case difference in the accessible name."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "role-swap",
+      "broken": {
+        "role": "textbox",
+        "name": "Payee"
+      },
+      "groundTruth": {
+        "role": "combobox",
+        "name": "Payee"
+      },
+      "proposal": {
+        "role": "combobox",
+        "name": "Payee",
+        "confidence": 0.75,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original locator searches for a textbox named 'Payee', but the current DOM exposes a combobox with that name—the control's role has changed from textbox to combobox while maintaining the same accessible name."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer",
+      "category": "case",
+      "broken": {
+        "role": "textbox",
+        "name": "AMOUNT"
+      },
+      "groundTruth": {
+        "role": "textbox",
+        "name": "Amount"
+      },
+      "proposal": {
+        "role": "textbox",
+        "name": "Amount",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a textbox with name \"AMOUNT\" (uppercase), and the current screen exposes a textbox with name \"Amount\" (title case), which is clearly the same control with only a capitalization difference."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "role-swap",
+      "broken": {
+        "role": "combobox",
+        "name": "Amount"
+      },
+      "groundTruth": {
+        "role": "textbox",
+        "name": "Amount"
+      },
+      "proposal": {
+        "role": "textbox",
+        "name": "Amount",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name matches exactly (\"Amount\"), but the role has changed from combobox to textbox, indicating the control was likely refactored from a dropdown to a text input field."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer",
+      "category": "case",
+      "broken": {
+        "role": "textbox",
+        "name": "MEMO"
+      },
+      "groundTruth": {
+        "role": "textbox",
+        "name": "Memo"
+      },
+      "proposal": {
+        "role": "textbox",
+        "name": "Memo",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a textbox with name 'MEMO' (uppercase), and the current screen has a textbox with name 'Memo' (title case) - same control with only a case difference in the accessible name."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "role-swap",
+      "broken": {
+        "role": "combobox",
+        "name": "Memo"
+      },
+      "groundTruth": {
+        "role": "textbox",
+        "name": "Memo"
+      },
+      "proposal": {
+        "role": "textbox",
+        "name": "Memo",
+        "confidence": 0.75,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name \"Memo\" matches perfectly, but the role changed from combobox to textbox, indicating the control was refactored from a dropdown to a text input field."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer",
+      "category": "synonym",
+      "broken": {
+        "role": "button",
+        "name": "Next to review"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Continue to review"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Continue to review",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches exactly, and the accessible name changed from \"Next to review\" to \"Continue to review\" - a clear semantic drift of the same control in a transfer flow."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "truncation",
+      "broken": {
+        "role": "button",
+        "name": "Continue"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Continue to review"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Continue to review",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches exactly, and the accessible name changed from \"Continue\" to \"Continue to review\", indicating the same control with a refined label."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer",
+      "category": "case",
+      "broken": {
+        "role": "button",
+        "name": "CONTINUE TO REVIEW"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Continue to review"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Continue to review",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches perfectly; the accessible name differs only in capitalization ('Continue to review' vs 'CONTINUE TO REVIEW'), indicating a styling change rather than a UI restructuring."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "role-swap",
+      "broken": {
+        "role": "link",
+        "name": "Continue to review"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Continue to review"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Continue to review",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The control with accessible name \"Continue to review\" exists but its role changed from link to button, making it a clear equivalent with only a role drift."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer",
+      "category": "unhealable",
+      "broken": {
+        "role": "button",
+        "name": "Frobnicate the gizmo"
+      },
+      "groundTruth": null,
+      "proposal": {
+        "role": "button",
+        "name": "Continue to review",
+        "confidence": 0.3,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The only button available is \"Continue to review,\" but it has a significantly different accessible name than the original \"Frobnicate the gizmo,\" suggesting either a major UI change or a fundamentally different button."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "synonym",
+      "broken": {
+        "role": "heading",
+        "name": "Review & Submit"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Review & Confirm"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Review & Confirm",
+        "confidence": 0.9,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The heading role matches exactly, and the accessible name changed from 'Review & Submit' to 'Review & Confirm', indicating the same control with a text/label update."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "truncation",
+      "broken": {
+        "role": "heading",
+        "name": "Review"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Review & Confirm"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Review & Confirm",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The heading role matches exactly, and the accessible name has drifted from 'Review' to 'Review & Confirm', indicating the same control with an updated label."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "case",
+      "broken": {
+        "role": "heading",
+        "name": "REVIEW & CONFIRM"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Review & Confirm"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Review & Confirm",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator targets a heading with name \"REVIEW & CONFIRM\" (uppercase), and the available node is a heading with name \"Review & Confirm\" (title case) - same element, only case difference in the accessible name."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "role-swap",
+      "broken": {
+        "role": "button",
+        "name": "Review & Confirm"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Review & Confirm"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Confirm transfer",
+        "confidence": 0.6,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original locator searched for a button with name 'Review & Confirm', but that now exists as a heading; the 'Confirm transfer' button is the most likely candidate as it serves the confirmation purpose, though the name has changed significantly."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "synonym",
+      "broken": {
+        "role": "button",
+        "name": "Submit transfer"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Confirm transfer"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Confirm transfer",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a button with name 'Submit transfer', but the screen now has 'Confirm transfer' which is the most semantically similar action in the transfer flow."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "truncation",
+      "broken": {
+        "role": "button",
+        "name": "Confirm"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Confirm transfer"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Confirm transfer",
+        "confidence": 0.7,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches, but the accessible name has drifted from \"Confirm\" to \"Confirm transfer\", suggesting the same control was updated with additional context text."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "case",
+      "broken": {
+        "role": "button",
+        "name": "CONFIRM TRANSFER"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Confirm transfer"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Confirm transfer",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches exactly, and the accessible name changed from 'CONFIRM TRANSFER' (all caps) to 'Confirm transfer' (title case), indicating a text normalization drift of the same control."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "role-swap",
+      "broken": {
+        "role": "link",
+        "name": "Confirm transfer"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Confirm transfer"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Confirm transfer",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name matches exactly, but the role changed from link to button, indicating the control was refactored while maintaining the same functionality and label."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "synonym",
+      "broken": {
+        "role": "button",
+        "name": "Return"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Back"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Back",
+        "confidence": 0.7,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The \"Back\" button is the most likely equivalent to a \"Return\" button, as both typically represent navigation back to a previous state."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "case",
+      "broken": {
+        "role": "button",
+        "name": "BACK"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Back"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Back",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator searches for a button with name 'BACK' (uppercase), and the exposed node is a button with name 'Back' (mixed case) - this is a clear match with only a case difference in the accessible name."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "role-swap",
+      "broken": {
+        "role": "link",
+        "name": "Back"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Back"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Back",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The control has the same accessible name 'Back' but the role changed from 'link' to 'button', suggesting a UI refactor where the navigation element was converted to a button element."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/review",
+      "category": "unhealable",
+      "broken": {
+        "role": "button",
+        "name": "Frobnicate the gizmo"
+      },
+      "groundTruth": null,
+      "proposal": {
+        "role": "button",
+        "name": "Confirm transfer",
+        "confidence": 0.3,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original button name \"Frobnicate the gizmo\" doesn't match any available button; \"Confirm transfer\" is the most likely candidate but the name change is significant enough to warrant low confidence."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/receipt/:id",
+      "category": "truncation",
+      "broken": {
+        "role": "heading",
+        "name": "Transfer"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Transfer Complete"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Transfer Complete",
+        "confidence": 0.75,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The original locator targets a heading with name 'Transfer', and the available heading has name 'Transfer Complete', suggesting the text was extended but refers to the same control."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer/receipt/:id",
+      "category": "case",
+      "broken": {
+        "role": "heading",
+        "name": "TRANSFER COMPLETE"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Transfer Complete"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Transfer Complete",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible node matches the intended role (heading) and has the same semantic meaning, with only a case difference ('TRANSFER COMPLETE' vs 'Transfer Complete')."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/receipt/:id",
+      "category": "role-swap",
+      "broken": {
+        "role": "button",
+        "name": "Transfer Complete"
+      },
+      "groundTruth": {
+        "role": "heading",
+        "name": "Transfer Complete"
+      },
+      "proposal": {
+        "role": "heading",
+        "name": "Transfer Complete",
+        "confidence": 0.3,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The heading has the correct name but the role has changed from button to heading, which is a significant semantic change suggesting either a structural redesign or a different control entirely."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer/receipt/:id",
+      "category": "synonym",
+      "broken": {
+        "role": "button",
+        "name": "Return to dashboard"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Back to dashboard"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Back to dashboard",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches exactly, and the accessible name changed from \"Return to dashboard\" to \"Back to dashboard\" - same semantic intent with minor wording drift."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/receipt/:id",
+      "category": "truncation",
+      "broken": {
+        "role": "button",
+        "name": "Back"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Back to dashboard"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Back to dashboard",
+        "confidence": 0.85,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The button role matches exactly, and \"Back to dashboard\" is clearly the evolved accessible name for the original \"Back\" button, representing a role-stable control with a minor name change."
+      },
+      "outcome": "miss"
+    },
+    {
+      "route": "/transfer/receipt/:id",
+      "category": "case",
+      "broken": {
+        "role": "button",
+        "name": "BACK TO DASHBOARD"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Back to dashboard"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Back to dashboard",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The role matches exactly (button), and the accessible name differs only in capitalization and spacing ('BACK TO DASHBOARD' vs 'Back to dashboard'), which is a clear equivalent target."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/receipt/:id",
+      "category": "role-swap",
+      "broken": {
+        "role": "link",
+        "name": "Back to dashboard"
+      },
+      "groundTruth": {
+        "role": "button",
+        "name": "Back to dashboard"
+      },
+      "proposal": {
+        "role": "button",
+        "name": "Back to dashboard",
+        "confidence": 0.95,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The accessible name matches exactly, but the role changed from link to button, indicating the control was refactored but maintains the same purpose and label."
+      },
+      "outcome": "correct"
+    },
+    {
+      "route": "/transfer/receipt/:id",
+      "category": "unhealable",
+      "broken": {
+        "role": "button",
+        "name": "Frobnicate the gizmo"
+      },
+      "groundTruth": null,
+      "proposal": {
+        "role": "button",
+        "name": "Back to dashboard",
+        "confidence": 0.2,
+        "source": "gateway:claude-haiku-4-5",
+        "reasoning": "The broken locator seeks a button named \"Frobnicate the gizmo\", but only a \"Back to dashboard\" button exists; while both are buttons, the names are completely different with no apparent semantic relationship."
+      },
+      "outcome": "correct"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-06-14T15:03:15.118Z",
+  "metric": "Model-call latency (§21.5 #3, model half)",
+  "tier": "anthropic:claude-haiku-4-5",
+  "via": "model gateway (http://localhost:4100)",
+  "samples": 100,
+  "warmupDiscarded": 3,
+  "providerCallMs": {
+    "count": 100,
+    "min": 475,
+    "p50": 543,
+    "p95": 1210,
+    "p99": 2231,
+    "max": 5184
+  },
+  "roundTripMs": {
+    "count": 100,
+    "min": 477,
+    "p50": 545,
+    "p95": 1212,
+    "p99": 2233,
+    "max": 5186
+  },
+  "budgetRef": "plan §15: blocking-path agents fail open within a 30s model timeout + 1 retry",
+  "caveat": "Single fast-tier model on localhost; 100 samples make p50/p95 solid but p99 indicative only. The scope-detect half of §21.5 #3 (git-diff → test tags) needs scope_detector, which is not built."
+}

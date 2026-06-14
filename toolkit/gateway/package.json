@@ -1,0 +1,15 @@
+{
+  "name": "qa-model-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "QA Evergreen model gateway (POC) — provider-agnostic broker: credential isolation, per-repo quota + cost attribution + payload-type audit. Plan §21.4 [POC].",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}

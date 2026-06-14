@@ -1,0 +1,32 @@
+# ── Secrets — NEVER commit ────────────────────────────────────────────────
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+
+# ── Dependencies & build artifacts ────────────────────────────────────────
+**/node_modules/
+**/dist/
+**/.angular/
+**/test-results/
+**/playwright-report/
+**/*.tsbuildinfo
+
+# ── Steel-thread generated/transient output ───────────────────────────────
+steel-thread/thread/generated/*.har
+steel-thread/thread/generated/verification.json
+
+# ── Per-profile discovery/run output (regenerable; snapshots are large) ────
+runs/
+# Per-profile generated tests + traces + eval output (regenerable via the
+# discover → generate flow). FundFlow's steel-thread/thread/generated/ stays
+# tracked as the reference test-of-record + POC evidence.
+steel-thread/thread/out/
+
+# ── Model gateway runtime output ──────────────────────────────────────────
+toolkit/gateway/audit/
+
+# ── Local tooling ─────────────────────────────────────────────────────────
+.claude/settings.local.json
+.DS_Store

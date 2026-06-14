@@ -1,0 +1,14 @@
+{
+  "name": "@qa-evergreen/runner",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dedicated Playwright TEST-RUNNER package for the QA Evergreen platform. Owns @playwright/test so generated specs can live anywhere (e.g. repo-root runs/<profile>/) instead of under steel-thread/thread just to resolve the runner.",
+  "scripts": {
+    "test": "playwright test",
+    "test:example": "playwright test --config=playwright.example.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "steel-thread",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Steel-thread harness: discovery -> trace compiler -> dual-framework Playwright runner.",
+  "scripts": {
+    "discover": "node discover.mjs",
+    "verify": "node verify_crawl.mjs",
+    "compile": "node trace_compiler.mjs",
+    "test": "playwright test",
+    "test:react": "playwright test --project=react",
+    "test:angular": "playwright test --project=angular",
+    "typecheck": "tsc --noEmit",
+    "metrics:coverage": "node metrics/coverage.mjs",
+    "metrics:ai-draft": "node metrics/ai_draft_eval.mjs",
+    "metrics:healer": "node metrics/healer_eval.mjs",
+    "metrics:latency": "node metrics/latency_eval.mjs"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.104.1",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^22.19.21",
+    "typescript": "^5.6.0"
+  }
+}

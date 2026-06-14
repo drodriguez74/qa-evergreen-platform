@@ -1,0 +1,147 @@
+{
+  "generatedAt": "2026-06-14T14:02:26.760Z",
+  "metric": "AI-draft false-positive rate (§21.5 #1)",
+  "via": "model gateway (http://localhost:4100)",
+  "reasoningTier": "anthropic:claude-sonnet-4-6",
+  "journey": "analyst-transfer-happy-path",
+  "gates": [
+    "typecheck",
+    "locators",
+    "assertionBar",
+    "completeness"
+  ],
+  "requested": 5,
+  "modelRuns": 5,
+  "needingRework": 1,
+  "falsePositiveRatePct": 20,
+  "caveat": "Single journey, small N. This validates the harness and gives a first real number; a defensible rate needs more journeys and the provider bake-off (§21.2).",
+  "runs": [
+    {
+      "run": 1,
+      "usedModel": true,
+      "compileOk": true,
+      "gates": {
+        "typecheck": {
+          "pass": true,
+          "detail": ""
+        },
+        "locators": {
+          "pass": true,
+          "detail": ""
+        },
+        "assertionBar": {
+          "pass": true,
+          "detail": "Transfer Complete=true, Transaction ID=true"
+        },
+        "completeness": {
+          "pass": true,
+          "detail": "feature=true, importsPage=true, hasTest=true, pages=5"
+        }
+      },
+      "needsRework": false,
+      "failedGates": []
+    },
+    {
+      "run": 2,
+      "usedModel": true,
+      "compileOk": true,
+      "gates": {
+        "typecheck": {
+          "pass": true,
+          "detail": ""
+        },
+        "locators": {
+          "pass": true,
+          "detail": ""
+        },
+        "assertionBar": {
+          "pass": true,
+          "detail": "Transfer Complete=true, Transaction ID=true"
+        },
+        "completeness": {
+          "pass": true,
+          "detail": "feature=true, importsPage=true, hasTest=true, pages=5"
+        }
+      },
+      "needsRework": false,
+      "failedGates": []
+    },
+    {
+      "run": 3,
+      "usedModel": true,
+      "compileOk": true,
+      "gates": {
+        "typecheck": {
+          "pass": true,
+          "detail": ""
+        },
+        "locators": {
+          "pass": true,
+          "detail": ""
+        },
+        "assertionBar": {
+          "pass": true,
+          "detail": "Transfer Complete=true, Transaction ID=true"
+        },
+        "completeness": {
+          "pass": true,
+          "detail": "feature=true, importsPage=true, hasTest=true, pages=5"
+        }
+      },
+      "needsRework": false,
+      "failedGates": []
+    },
+    {
+      "run": 4,
+      "usedModel": true,
+      "compileOk": true,
+      "gates": {
+        "typecheck": {
+          "pass": true,
+          "detail": ""
+        },
+        "locators": {
+          "pass": false,
+          "detail": "/\\.locator\\(/"
+        },
+        "assertionBar": {
+          "pass": true,
+          "detail": "Transfer Complete=true, Transaction ID=true"
+        },
+        "completeness": {
+          "pass": true,
+          "detail": "feature=true, importsPage=true, hasTest=true, pages=5"
+        }
+      },
+      "needsRework": true,
+      "failedGates": [
+        "locators"
+      ]
+    },
+    {
+      "run": 5,
+      "usedModel": true,
+      "compileOk": true,
+      "gates": {
+        "typecheck": {
+          "pass": true,
+          "detail": ""
+        },
+        "locators": {
+          "pass": true,
+          "detail": ""
+        },
+        "assertionBar": {
+          "pass": true,
+          "detail": "Transfer Complete=true, Transaction ID=true"
+        },
+        "completeness": {
+          "pass": true,
+          "detail": "feature=true, importsPage=true, hasTest=true, pages=5"
+        }
+      },
+      "needsRework": false,
+      "failedGates": []
+    }
+  ]
+}
