@@ -36,6 +36,12 @@ const DEFAULTS = {
   api: { baseURL: null, openapi: null, resetPath: '/api/reset' },
   targets: [],   // [{ name, baseURL }] — the SAME spec runs against each
   journeys: [],  // [{ id, role }]
+  // How the target authenticates:
+  //   form    (default) — login is a journey step (user/pass; MFA bypassed)
+  //   session           — reuse a captured authenticated state (SSO/MFA). The
+  //                       state JSON (cookies + storage) is shared by agent-browser
+  //                       (--state) and Playwright (storageState).
+  auth: { mode: 'form', statePath: null },
 };
 
 function deepMerge(base, over) {
@@ -78,6 +84,13 @@ export function loadProfile(nameOrPath) {
     ? rel(merged.workDir)
     : (merged.name === 'fundflow' ? resolve(TEST_HOME, 'generated') : resolve(TEST_HOME, 'out', merged.name));
 
+  // Auth state JSON (cookies + storage) for session mode; default .auth/<name>.json
+  // at repo root (gitignored — it holds live session tokens).
+  const auth = {
+    mode: merged.auth.mode || 'form',
+    statePath: rel(merged.auth.statePath) || resolve(REPO_ROOT, '.auth', `${merged.name}.json`),
+  };
+
   return {
     name: merged.name,
     description: merged.description,
@@ -86,6 +99,7 @@ export function loadProfile(nameOrPath) {
     targets: merged.targets,
     journeys: merged.journeys,
     gateway: merged.gateway,
+    auth,
     workDir,
     baseDir,
     profilePath,

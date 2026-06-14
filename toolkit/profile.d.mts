@@ -19,6 +19,7 @@ export interface Profile {
   targets: ProfileTarget[];
   journeys: ProfileJourney[];
   gateway: { url: string };
+  auth: { mode: 'form' | 'session'; statePath: string };
   workDir: string;
   baseDir: string;
   profilePath: string;

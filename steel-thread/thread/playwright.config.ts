@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { existsSync } from 'node:fs';
 import { loadProfile } from '../../toolkit/profile.mjs';
 
 /**
@@ -11,6 +12,13 @@ import { loadProfile } from '../../toolkit/profile.mjs';
  * The mock API for fundflow must be up on :4000.
  */
 const profile = loadProfile();
+
+// Session-mode auth (SSO/MFA): start every context from the captured authenticated
+// state, so specs begin logged in (no login step). Form-mode profiles ignore this.
+const storageState =
+  profile.auth?.mode === 'session' && existsSync(profile.auth.statePath)
+    ? profile.auth.statePath
+    : undefined;
 
 export default defineConfig({
   testDir: profile.workDir,
@@ -28,6 +36,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     headless: true,
     navigationTimeout: 60_000,
+    storageState,
   },
   projects: profile.targets.map((t) => ({
     name: t.name,

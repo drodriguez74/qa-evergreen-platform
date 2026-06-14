@@ -19,7 +19,7 @@
  */
 
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadProfile } from '../profile.mjs';
 
@@ -93,7 +93,13 @@ function performAction(action) {
 
 function discover() {
   const url = target.baseURL.replace(/\/$/, '') + (journey.entryPath || '/');
-  const opened = ab(['open', url, '--allowed-domains', HOST]);
+  // Session-mode auth (SSO/MFA): load the captured state so the crawl starts
+  // authenticated. agent-browser --state reads the same JSON Playwright wrote.
+  const openArgs = ['open', url, '--allowed-domains', HOST];
+  if (profile.auth?.mode === 'session' && existsSync(profile.auth.statePath)) {
+    openArgs.push('--state', profile.auth.statePath);
+  }
+  const opened = ab(openArgs);
   if (!opened.ok) throw new Error(`could not open ${url} (${opened.stderr || opened.error?.message})`);
 
   ab(['wait', '1500']);

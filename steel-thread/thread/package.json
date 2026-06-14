@@ -8,6 +8,7 @@
     "discover": "node discover.mjs",
     "verify": "node verify_crawl.mjs",
     "compile": "node trace_compiler.mjs",
+    "auth:capture": "node auth_capture.mjs",
     "test": "playwright test",
     "test:react": "playwright test --project=react",
     "test:angular": "playwright test --project=angular",

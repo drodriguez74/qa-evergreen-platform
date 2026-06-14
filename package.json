@@ -1,0 +1,11 @@
+{
+  "name": "qa-evergreen-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "QA Evergreen Platform — root orchestration (setup + preflight doctor). Each subpackage (toolkit/gateway, steel-thread/*, runner) has its own package.json.",
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "doctor": "node scripts/doctor.mjs"
+  }
+}

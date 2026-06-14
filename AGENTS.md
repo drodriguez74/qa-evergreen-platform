@@ -58,7 +58,8 @@ profile == one gateway `repo` id, so cost/quota/audit/latency are attributed per
 
 ## Using the platform on your app
 
-Onboard a new application as a profile, then discover → generate → run.
+Onboard a new application as a profile, then discover → generate → run. Step-by-step recipes for this
+and most other tasks live in the [cookbook](docs/cookbook.md).
 
 ```bash
 # 0. Start the gateway (holds the provider key; default model claude-sonnet-4-6)

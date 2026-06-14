@@ -37,17 +37,24 @@ runner/  +  steel-thread/thread/   run the compiled specs (Playwright) against t
 ## Quickstart — onboard an app
 
 ```bash
-# 0. Start the model gateway (holds the provider key; default model claude-sonnet-4-6)
+# 0. Install deps + browser, then verify the environment
+npm run setup                          # installs platform deps + Playwright Chromium
+npm run doctor -- --url https://yourapp.example.com   # node/agent-browser/key/app reachability
+
+# 1. Start the model gateway (holds the provider key; default model claude-sonnet-4-6)
 cd toolkit/gateway && npm install && npm start          # http://localhost:4100
 
-# 1. Crawl the target and scaffold a profile + first journey
+# 2. Crawl the target and scaffold a profile + first journey
 node toolkit/agents/profile_init.mjs myapp https://myapp.example.com --user U --pass P
 
-# 2. Discover → generate → run (profile-driven)
+# 3. Discover → generate → run (profile-driven)
 QA_PROFILE=myapp node toolkit/agents/journey_discoverer.mjs
 QA_PROFILE=myapp node toolkit/agents/test_generator.mjs
 cd steel-thread/thread && QA_PROFILE=myapp npx playwright test
 ```
+
+For SSO/MFA apps, use session-mode auth instead of `--user/--pass` — see the
+[cookbook](docs/cookbook.md) → "Authenticate".
 
 See [`profiles/README.md`](profiles/README.md) for the profile schema and adoption modes, and
 [`toolkit/gateway/README.md`](toolkit/gateway/README.md) for the gateway + credential seam.
@@ -72,7 +79,7 @@ Measured through the gateway, reproducible via `steel-thread/thread/metrics/` (s
 | `profiles/` | one JSON per target app (`fundflow` reference + live examples) |
 | `steel-thread/` | the React/Angular demo apps, mock API, and the test harness + metrics |
 | `runner/` | a standalone Playwright runner package (decouples specs from the steel thread) |
-| `docs/` | the implementation plan + the model-gateway scope |
+| `docs/` | the implementation plan, the model-gateway scope, and the [cookbook](docs/cookbook.md) (task recipes) |
 
 ## Notes
 
