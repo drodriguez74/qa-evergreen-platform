@@ -79,7 +79,8 @@ Measured through the gateway, reproducible via `steel-thread/thread/metrics/` (s
 | `profiles/` | one JSON per target app (`fundflow` reference + live examples) |
 | `steel-thread/` | the React/Angular demo apps, mock API, and the test harness + metrics |
 | `runner/` | a standalone Playwright runner package (decouples specs from the steel thread) |
-| `docs/` | the implementation plan, [roadmap to "complete"](docs/roadmap-to-ecosystem.md), model-gateway scope, the [cookbook](docs/cookbook.md), and the [handoff/audit](docs/HANDOFF.md) guide |
+| `docs/` | the implementation plan, [roadmap to "complete"](docs/roadmap-to-ecosystem.md), the [discovery-vs-breadcrumb decision](docs/discovery-vs-breadcrumb.md), model-gateway scope, the [cookbook](docs/cookbook.md), and the [handoff/audit](docs/HANDOFF.md) guide |
+| `ci/` | `qa-ecosystem.gitlab-ci.yml` — shared CI template skeleton (Layer 4); `scripts/coverage_gate.mjs` is the merge gate |
 
 ## Notes
 

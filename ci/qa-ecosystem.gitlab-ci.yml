@@ -1,0 +1,67 @@
+# qa-ecosystem.gitlab-ci.yml — SHARED CI TEMPLATE (skeleton, plan Layer 4 / §11)
+#
+# STATUS: skeleton for the office to wire to the company GitLab. It sequences the
+# REAL scripts that already exist in this repo (setup, playwright UI + API runs,
+# coverage metrics, the merge-blocking coverage gate). What the office must fill
+# in: runner tags/images, the {app}-qa repo checkout, the per-repo CI/CD variables
+# (QA_PROFILE, QA_BASE_URL, the model key for the gateway), and how/where the
+# model gateway runs (sidecar service vs in-job). See docs/roadmap-to-ecosystem.md
+# (Phase 2) and docs/implementation-plan.md §11.
+#
+# Consumer repos would include it with one line (pin a tag, never main):
+#   include:
+#     - project: 'platform/qa-ecosystem'
+#       ref: v0.1.0
+#       file: 'qa-ecosystem.gitlab-ci.yml'
+
+stages: [setup, test, gate]
+
+variables:
+  QA_PROFILE: ""              # the target app's profile (required, per-repo)
+  QA_COVERAGE_GATE: "50"      # merge floor (plan default)
+  # QA gateway URL + model key are provided as masked CI/CD variables at group level.
+
+default:
+  image: mcr.microsoft.com/playwright:v1.60.0-jammy   # placeholder — pin to your runner image
+
+# Install platform deps + browsers. (Office: cache node_modules / use a prebuilt image.)
+qa:setup:
+  stage: setup
+  script:
+    - npm run setup
+    - npm run doctor -- --url "$QA_BASE_URL"   # fails loud on missing env / unreachable app
+  artifacts:
+    paths: ["**/node_modules/"]   # placeholder — prefer image/cache in practice
+    expire_in: 1h
+
+# Run the generated UI tests (per-target) + the status+zod API tests.
+qa:test:
+  stage: test
+  needs: ["qa:setup"]
+  script:
+    - cd steel-thread/thread
+    - QA_PROFILE="$QA_PROFILE" npx playwright test            # UI specs
+    - QA_PROFILE="$QA_PROFILE" npx playwright test --config=api.config.ts   # API specs
+    - QA_PROFILE="$QA_PROFILE" npm run metrics:coverage       # writes coverage-manifest.json
+  artifacts:
+    when: always
+    paths:
+      - "steel-thread/thread/**/coverage-manifest.json"
+      - "steel-thread/thread/**/playwright-report/"
+    expire_in: 1 week
+
+# Block the merge if coverage is below the floor.
+qa:coverage-gate:
+  stage: gate
+  needs: ["qa:test"]
+  script:
+    - QA_PROFILE="$QA_PROFILE" QA_COVERAGE_GATE="$QA_COVERAGE_GATE" node scripts/coverage_gate.mjs
+  # GitLab branch protection: require this job to pass before merge (the non-human gate).
+
+# --- Office TODO (Phase 2, not in this skeleton) -----------------------------
+# - qa:openapi-check (validate spec presence + annotation quality, plan Rule 1)
+# - qa:breadcrumb-check (freshness, once a breadcrumb layer exists)
+# - scope_detector: git-diff -> TEST_TAGS for selective runs (plan §11) + p99 budget
+# - the model GATEWAY as a real service (Azure-auth, per-repo quota) — not in-job
+# - {app}-qa repo checkout via a scoped deploy token (never a token in the URL)
+# - scheduled regression cron + email/PR report narration (Layer 5)
