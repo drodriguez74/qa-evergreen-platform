@@ -22,6 +22,23 @@ export function ready() {
   return Boolean(ENDPOINT() && API_KEY());
 }
 
+// Map a neutral message's content to OpenAI chat format. A plain string passes
+// through unchanged (historical path); a content-block array (multimodal) is
+// translated to OpenAI's parts shape so vision prompts work for contract parity:
+//   {type:'text', text}                         -> {type:'text', text}
+//   {type:'image', source:{base64, media_type}} -> {type:'image_url', image_url:{url:'data:<media_type>;base64,<data>'}}
+function mapContent(content) {
+  if (typeof content === 'string') return content;
+  return content.map((b) => {
+    if (b.type === 'text') return { type: 'text', text: b.text };
+    if (b.type === 'image') {
+      const { media_type, data } = b.source;
+      return { type: 'image_url', image_url: { url: `data:${media_type};base64,${data}` } };
+    }
+    throw new Error(`azure-openai: unsupported content block type "${b.type}"`);
+  });
+}
+
 export async function complete(req) {
   if (!ready()) {
     throw new Error('azure-openai not configured (set AZURE_OPENAI_ENDPOINT + AZURE_OPENAI_API_KEY)');
@@ -29,7 +46,7 @@ export async function complete(req) {
   // Map neutral messages → OpenAI chat format (system as a leading message).
   const messages = [];
   if (req.system) messages.push({ role: 'system', content: req.system });
-  for (const m of req.messages) messages.push({ role: m.role, content: m.content });
+  for (const m of req.messages) messages.push({ role: m.role, content: mapContent(m.content) });
 
   const body = { messages, max_completion_tokens: req.max_tokens || 4096 };
   // R7: strict structured output from the neutral tool's input_schema.

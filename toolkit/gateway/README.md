@@ -34,10 +34,27 @@ The credential is read from `process.env`, then `toolkit/gateway/.env`, then `st
 ## API
 
 ```
-GET  /healthz       → { ok, tiers, providers:{anthropic, azure}, credentialProvider }
+GET  /healthz       → { ok, tiers, providers:{anthropic, azure}, credentialProvider, vision }
 GET  /v1/usage      → { cost (per repo, estimated), quota, auditLog path, credentialProvider }
 POST /v1/messages   → see docs/model-gateway-scope.md §4 for the request/response contract
 ```
+
+### Multimodal (vision) content
+
+`messages[].content` accepts **either** a plain string (the historical shape — unchanged)
+**or** an array of content blocks, so a discovery step can ask a vision model to identify
+unlabeled UI elements:
+
+```jsonc
+"content": [
+  { "type": "text",  "text": "What color is this image? One word." },
+  { "type": "image", "source": { "type": "base64", "media_type": "image/png", "data": "<base64>" } }
+]
+```
+
+Bad shapes return `400` with a clear message. The anthropic adapter passes content-block
+arrays straight to the Messages API (Sonnet 4.6 is multimodal); the azure adapter maps them
+to OpenAI's `image_url` parts for contract parity.
 
 ## Credential providers (the PILOT secret-handling seam)
 

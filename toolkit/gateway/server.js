@@ -41,6 +41,50 @@ app.use(express.json({ limit: '4mb' }));
 
 // --- helpers ---------------------------------------------------------------
 
+// Validate messages[].content, accepting EITHER a plain string (the historical
+// shape the whole pipeline uses) OR an array of content blocks for multimodal
+// (vision) prompts. Returns an error string on a bad shape, or null when valid.
+// Block shapes (Anthropic-native; the azure adapter maps them on the way out):
+//   { type: 'text',  text }
+//   { type: 'image', source: { type: 'base64', media_type, data } }
+function validateMessages(messages) {
+  for (let i = 0; i < messages.length; i++) {
+    const m = messages[i];
+    if (!m || typeof m !== 'object' || Array.isArray(m)) {
+      return `messages[${i}] must be an object`;
+    }
+    if (!m.role) return `messages[${i}] missing "role"`;
+    const { content } = m;
+
+    if (typeof content === 'string') continue;     // historical path — unchanged
+    if (!Array.isArray(content)) {
+      return `messages[${i}].content must be a string or an array of content blocks`;
+    }
+    if (content.length === 0) {
+      return `messages[${i}].content array must not be empty`;
+    }
+    for (let j = 0; j < content.length; j++) {
+      const b = content[j];
+      const at = `messages[${i}].content[${j}]`;
+      if (!b || typeof b !== 'object' || Array.isArray(b)) {
+        return `${at} must be a content block object`;
+      }
+      if (b.type === 'text') {
+        if (typeof b.text !== 'string') return `${at} (text) requires a string "text"`;
+      } else if (b.type === 'image') {
+        const s = b.source;
+        if (!s || typeof s !== 'object') return `${at} (image) requires a "source" object`;
+        if (s.type !== 'base64') return `${at} (image) source.type must be "base64"`;
+        if (typeof s.media_type !== 'string') return `${at} (image) source.media_type must be a string`;
+        if (typeof s.data !== 'string') return `${at} (image) source.data must be a base64 string`;
+      } else {
+        return `${at} has unsupported block type "${b.type}" (expected "text" or "image")`;
+      }
+    }
+  }
+  return null;
+}
+
 async function withTimeoutAndRetry(fn) {
   let lastErr;
   for (let attempt = 0; attempt <= CALL_RETRIES; attempt++) {
@@ -59,7 +103,7 @@ async function withTimeoutAndRetry(fn) {
 // --- routes ----------------------------------------------------------------
 
 app.get('/healthz', (_req, res) => {
-  res.json({ ok: true, tiers: TIERS, providers: providerReadiness(), credentialProvider: credentials.providerName() });
+  res.json({ ok: true, tiers: TIERS, providers: providerReadiness(), credentialProvider: credentials.providerName(), vision: true });
 });
 
 app.get('/v1/usage', (_req, res) => {
@@ -76,6 +120,9 @@ app.post('/v1/messages', async (req, res) => {
   if (!Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'missing "messages"', requestId });
   }
+  // R7-adjacent: accept string OR multimodal content-block arrays; reject bad shapes (400).
+  const badMessages = validateMessages(messages);
+  if (badMessages) return res.status(400).json({ error: badMessages, requestId });
 
   let provider, model, binding;
   try {

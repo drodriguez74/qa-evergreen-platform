@@ -25,6 +25,7 @@ The active app is selected with `QA_PROFILE` (or `QA_PROFILE_PATH=/abs/path.json
 - [9. Inspect gateway usage (cost / quota / latency / audit)](#9-inspect-gateway-usage)
 - [10. Tune per-repo quota](#10-tune-per-repo-quota)
 - [11. Run specs via the standalone runner](#11-run-specs-via-the-standalone-runner)
+- [11b. Generate an accessibility-debt report (Tier 4)](#11b-generate-an-accessibility-debt-report-tier-4)
 - [12. Troubleshooting](#12-troubleshooting)
 
 ---
@@ -265,6 +266,31 @@ npx playwright test --config=playwright.example.config.ts    # runs runner/examp
 
 See `runner/README.md`. Migrating the main pipeline onto it (repointing `workDir` to repo-root
 `runs/<profile>/`) is a documented follow-up, not yet done.
+
+## 11b. Generate an accessibility-debt report (Tier 4)
+
+The same missing-ARIA gaps the locator strategy works *around* are real accessibility defects in the
+target app. The Tier-4 remediator turns them into a deliverable: it scans the profile's existing
+trace(s) **on disk** (no live browsing) and emits an a11y-debt report plus a draft remediation.
+
+```bash
+QA_PROFILE=<name> node toolkit/agents/a11y_remediator.mjs
+# → <workDir>/a11y-debt-report.json
+# → <workDir>/a11y-debt-report.md   (findings + per-element patch suggestion + draft PR description)
+```
+
+What it flags as **a11y debt**:
+
+- **Tier-1 locator debt** — actions the discoverer recorded with `locator.debt === true` or
+  `strategy:'unresolved'` (it had to degrade below role+name, or couldn't resolve the element at all).
+- **Interactive-but-unlabeled snapshot nodes** — clickable / `[onclick]` / `cursor:pointer` nodes
+  that are icon-only glyphs (e.g. `☰`), have no accessible name, or use a passive role (a `<div>`/`<p>`
+  acting as a button). Clickable structural roles (rows, list items) with real names are left alone.
+
+Each finding gets a suggested `aria-label`, phrased by the **gateway reasoning tier** when `:4100` is
+up (e.g. `☰` → "Open menu"), and a **deterministic fallback** otherwise (fail open). The report is
+read-only — it never opens a PR. Resolving each element signature to its frontend source file and
+opening a real draft PR against the app repo is the documented follow-up.
 
 ## 12. Troubleshooting
 

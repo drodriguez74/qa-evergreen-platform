@@ -38,6 +38,9 @@ export async function complete(req) {
   const params = {
     model: req.model,
     max_tokens: req.max_tokens || 4096,
+    // messages pass straight through: content is either a plain string or an
+    // array of native Anthropic content blocks (text/image), which the Messages
+    // API accepts directly — so vision prompts work with no transformation here.
     messages: req.messages,
   };
   if (req.system) params.system = req.system;
