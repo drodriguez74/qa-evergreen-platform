@@ -25,6 +25,8 @@ export default defineConfig({
   // Recursive so per-journey subdirs (test_generator writes <workDir>/<journeyId>/)
   // are discovered, alongside flat specs (fundflow's generated/*.spec.ts).
   testMatch: '**/*.spec.ts',
+  // API tests are request-only and run under their own config (api.config.ts).
+  testIgnore: '**/*.api.spec.ts',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   // Live external targets (e.g. orangehrm) can be slow to load; one retry +

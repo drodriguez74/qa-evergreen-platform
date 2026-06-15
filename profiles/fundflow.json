@@ -5,7 +5,8 @@
   "api": {
     "baseURL": "http://localhost:4000",
     "openapi": "steel-thread/shared/openapi.yaml",
-    "resetPath": "/api/reset"
+    "resetPath": "/api/reset",
+    "auth": { "login": "/api/login", "username": "analyst", "password": "demo1234" }
   },
   "targets": [
     { "name": "react", "baseURL": "http://localhost:5173" },

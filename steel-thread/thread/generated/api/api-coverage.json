@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-06-15T11:11:51.954Z",
+  "app": "fundflow",
+  "openapi": "/Users/darwinrodriguez/projects/qa-evergreen-platform/steel-thread/shared/openapi.yaml",
+  "covered": [
+    {
+      "operationId": "login",
+      "method": "POST",
+      "path": "/api/login"
+    },
+    {
+      "operationId": "listAccounts",
+      "method": "GET",
+      "path": "/api/accounts"
+    },
+    {
+      "operationId": "listPayees",
+      "method": "GET",
+      "path": "/api/payees"
+    },
+    {
+      "operationId": "createTransfer",
+      "method": "POST",
+      "path": "/api/transfers"
+    },
+    {
+      "operationId": "getTransfer",
+      "method": "GET",
+      "path": "/api/transfers/{id}"
+    },
+    {
+      "operationId": "reset",
+      "method": "POST",
+      "path": "/api/reset"
+    }
+  ]
+}

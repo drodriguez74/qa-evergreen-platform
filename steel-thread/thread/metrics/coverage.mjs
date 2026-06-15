@@ -207,6 +207,17 @@ function buildManifest() {
     observed.set(key, c.status);
   }
 
+  // Strict API coverage: endpoints with a generated status+zod test, from the
+  // api_test_generator manifest (<workDir>/api/api-coverage.json).
+  const schemaTested = new Set();
+  try {
+    const m = JSON.parse(readFileSync(join(GENERATED, 'api', 'api-coverage.json'), 'utf8'));
+    for (const c of m.covered || []) {
+      if (c.operationId) schemaTested.add(c.operationId);
+      if (c.method && c.path) schemaTested.add(`${c.method.toUpperCase()} ${c.path}`);
+    }
+  } catch { /* no api tests generated yet */ }
+
   const apiEndpoints = endpoints.map((e) => {
     const key = `${e.method} ${e.path}`;
     const status = observed.get(key);
@@ -217,8 +228,8 @@ function buildManifest() {
       tags: e.tags,
       consumerTouched: status !== undefined,
       observedStatus: status ?? null,
-      // No zod/schema-validating API test exists in the steel thread (UI specs only).
-      schemaValidatingTest: false,
+      // True when api_test_generator produced a status + zod schema test for it.
+      schemaValidatingTest: schemaTested.has(e.operationId) || schemaTested.has(key),
     };
   });
 

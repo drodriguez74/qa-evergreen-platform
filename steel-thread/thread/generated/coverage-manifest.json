@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T18:23:47.844Z",
+  "generatedAt": "2026-06-15T11:12:33.710Z",
   "app": "fundflow",
   "contract": "shared/a11y-contract.md",
   "sources": {
@@ -51,8 +51,8 @@
   "api": {
     "definition": "§9: endpoints with ≥1 test validating status code AND response schema via zod ÷ documented endpoints",
     "documentedTotal": 6,
-    "schemaValidated": 0,
-    "coveragePct": 0,
+    "schemaValidated": 6,
+    "coveragePct": 100,
     "consumerTouched": 4,
     "endpoints": [
       {
@@ -64,7 +64,7 @@
         ],
         "consumerTouched": true,
         "observedStatus": 200,
-        "schemaValidatingTest": false
+        "schemaValidatingTest": true
       },
       {
         "operationId": "listAccounts",
@@ -75,7 +75,7 @@
         ],
         "consumerTouched": true,
         "observedStatus": 200,
-        "schemaValidatingTest": false
+        "schemaValidatingTest": true
       },
       {
         "operationId": "listPayees",
@@ -86,7 +86,7 @@
         ],
         "consumerTouched": true,
         "observedStatus": 200,
-        "schemaValidatingTest": false
+        "schemaValidatingTest": true
       },
       {
         "operationId": "createTransfer",
@@ -97,7 +97,7 @@
         ],
         "consumerTouched": true,
         "observedStatus": 201,
-        "schemaValidatingTest": false
+        "schemaValidatingTest": true
       },
       {
         "operationId": "getTransfer",
@@ -108,7 +108,7 @@
         ],
         "consumerTouched": false,
         "observedStatus": null,
-        "schemaValidatingTest": false
+        "schemaValidatingTest": true
       },
       {
         "operationId": "reset",
@@ -119,7 +119,7 @@
         ],
         "consumerTouched": false,
         "observedStatus": null,
-        "schemaValidatingTest": false
+        "schemaValidatingTest": true
       }
     ],
     "drift": {
