@@ -56,5 +56,23 @@
         }
       ]
     }
+  ],
+  "intents": [
+    {
+      "id": "admin-opens-pim",
+      "description": "Admin logs in and opens the PIM module",
+      "given": "the OrangeHRM login page",
+      "entryPath": "/web/index.php/auth/login",
+      "priority": "high",
+      "maxDurationSeconds": 90,
+      "verify": [
+        "fill the Username field with ${ORANGEHRM_USER}",
+        "fill the Password field with ${ORANGEHRM_PASS}",
+        "click the Login button",
+        "the Dashboard heading is visible",
+        "click the PIM navigation link",
+        "the Employee Information heading is visible"
+      ]
+    }
   ]
 }

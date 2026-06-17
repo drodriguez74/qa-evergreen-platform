@@ -184,7 +184,7 @@ async function verifyIntent(intent) {
       const snap = snapshot();
       let d;
       try { d = await decide(intent, line, snap); }
-      catch (e) { detail = `gateway decide failed: ${e.message}`; break outer; }
+      catch (e) { detail = `gateway decide failed: ${e.message} [cause: ${e.cause?.code || e.cause?.message || e.cause || '?'}] [snap: ${snap?.error ? 'ERR ' + snap.error : 'ok'}]`; break outer; }
       const outcome = execDecision(d);
       if (outcome === 'pass') { verdict = 'pass'; detail = redact(line); continue outer; }
       if (outcome === 'fail') { verdict = 'fail'; detail = `refuted: ${redact(line)} (${d.reason})`; break outer; }
