@@ -1,32 +1,45 @@
-// adapters/azure-openai.js — Azure OpenAI provider adapter (interface-complete,
-// pending an in-tenant credential; plan §21.2 bake-off candidate).
+// adapters/azure-openai.js — Azure OpenAI provider adapter (built & functional).
 //
-// Deliberately uses fetch against the Azure REST API rather than adding an
-// uninstalled SDK dependency: the request *shaping* is real and reviewable, and
-// the bake-off runs the moment AZURE_OPENAI_ENDPOINT + AZURE_OPENAI_API_KEY land.
-// A neutral `tool` (R7) maps to OpenAI structured outputs (json_schema response
-// format); the adapter exposes the SAME complete()/ready() contract as anthropic.js,
-// so flipping QA_MODEL_REASONING to `azure:gpt-5.2` needs zero caller changes (R1).
+// Uses the Responses API (POST /openai/responses) with Bearer auth. Supports a
+// corporate proxy via AZURE_OPENAI_PROXY for environments behind an outbound
+// HTTP proxy. The neutral request (string OR text/image content blocks, R7
+// structured output) maps to the Responses API shape, so flipping
+// QA_MODEL_REASONING to `azure:<deployment>` needs zero caller changes (R1).
 //
 // Keys are obtained via the pluggable credential provider (credentials.js) so the
 // secret SOURCE is swappable (env now; Azure Key Vault / Azure AD later) without
 // changing this adapter.
 
 import * as credentials from '../credentials.js';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
-const ENDPOINT = () => credentials.get('AZURE_OPENAI_ENDPOINT'); // e.g. https://x.openai.azure.com
-const API_KEY = () => credentials.get('AZURE_OPENAI_API_KEY');   // PILOT: replace with Azure AD token
-const API_VERSION = () => credentials.get('AZURE_OPENAI_API_VERSION') || '2024-10-21';
+const ENDPOINT = () => credentials.get('AZURE_OPENAI_ENDPOINT');   // e.g. https://<resource>.openai.azure.com
+const API_KEY = () => credentials.get('AZURE_OPENAI_API_KEY');     // Bearer token
+const API_VERSION = () => credentials.get('AZURE_OPENAI_API_VERSION') || '2025-04-01-preview';
+const PROXY = () => credentials.get('AZURE_OPENAI_PROXY');         // e.g. http://corp-proxy.example.com:8080
 
 export function ready() {
   return Boolean(ENDPOINT() && API_KEY());
 }
 
-// Map a neutral message's content to OpenAI chat format. A plain string passes
-// through unchanged (historical path); a content-block array (multimodal) is
-// translated to OpenAI's parts shape so vision prompts work for contract parity:
-//   {type:'text', text}                         -> {type:'text', text}
-//   {type:'image', source:{base64, media_type}} -> {type:'image_url', image_url:{url:'data:<media_type>;base64,<data>'}}
+// Azure strict json_schema requires additionalProperties:false on every object
+// node. Inject it recursively before sending (the neutral tool schema may omit it).
+function enforceAdditionalProperties(schema) {
+  if (!schema || typeof schema !== 'object') return schema;
+  if (Array.isArray(schema)) return schema.map(enforceAdditionalProperties);
+  const out = { ...schema };
+  if (out.type === 'object' && !('additionalProperties' in out)) {
+    out.additionalProperties = false;
+  }
+  if (out.properties) {
+    out.properties = Object.fromEntries(
+      Object.entries(out.properties).map(([k, v]) => [k, enforceAdditionalProperties(v)]),
+    );
+  }
+  if (out.items) out.items = enforceAdditionalProperties(out.items);
+  return out;
+}
+
 function mapContent(content) {
   if (typeof content === 'string') return content;
   return content.map((b) => {
@@ -39,38 +52,77 @@ function mapContent(content) {
   });
 }
 
+function buildInput(messages) {
+  return messages.map((m) => ({ role: m.role, content: mapContent(m.content) }));
+}
+
 export async function complete(req) {
   if (!ready()) {
     throw new Error('azure-openai not configured (set AZURE_OPENAI_ENDPOINT + AZURE_OPENAI_API_KEY)');
   }
-  // Map neutral messages → OpenAI chat format (system as a leading message).
-  const messages = [];
-  if (req.system) messages.push({ role: 'system', content: req.system });
-  for (const m of req.messages) messages.push({ role: m.role, content: mapContent(m.content) });
 
-  const body = { messages, max_completion_tokens: req.max_tokens || 4096 };
-  // R7: strict structured output from the neutral tool's input_schema.
+  const url = `${ENDPOINT()}/openai/responses?api-version=${API_VERSION()}`;
+
+  const body = {
+    model: req.model,
+    input: buildInput(req.messages),
+    max_output_tokens: req.max_tokens || 4096,
+  };
+  if (req.system) body.instructions = req.system;
+
+  // R7: strict structured output via json_schema response format.
   if (req.tool) {
-    body.response_format = {
-      type: 'json_schema',
-      json_schema: { name: req.tool.name, schema: req.tool.input_schema, strict: true },
+    body.text = {
+      format: {
+        type: 'json_schema',
+        name: req.tool.name,
+        schema: enforceAdditionalProperties(req.tool.input_schema),
+        strict: true,
+      },
     };
   }
 
-  const url = `${ENDPOINT()}/openai/deployments/${req.model}/chat/completions?api-version=${API_VERSION()}`;
-  const res = await fetch(url, {
+  const fetchOptions = {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'api-key': API_KEY() },
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${API_KEY()}`,
+    },
     body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`azure-openai HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  };
+
+  const proxy = PROXY();
+  if (proxy) fetchOptions.agent = new HttpsProxyAgent(proxy);
+
+  const res = await fetch(url, fetchOptions);
+  if (!res.ok) {
+    throw new Error(`azure-openai HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  }
   const data = await res.json();
 
-  const choice = data.choices?.[0]?.message?.content ?? '';
   const usage = {
-    input_tokens: data.usage?.prompt_tokens ?? 0,
-    output_tokens: data.usage?.completion_tokens ?? 0,
+    input_tokens: data.usage?.input_tokens ?? 0,
+    output_tokens: data.usage?.output_tokens ?? 0,
   };
-  const output = req.tool ? JSON.parse(choice) : choice;
+
+  // Extract text from the Responses API output structure.
+  let text = '';
+  if (data.output_text) {
+    text = data.output_text;
+  } else if (data.output) {
+    for (const item of data.output) {
+      if (item.type === 'message') {
+        for (const block of item.content || []) {
+          if (block.type === 'output_text') text += block.text;
+        }
+      }
+    }
+  }
+
+  if (data.status === 'failed') {
+    throw new Error(`azure-openai response failed: ${JSON.stringify(data.error || 'unknown')}`);
+  }
+
+  const output = req.tool ? JSON.parse(text) : text;
   return { output, usage };
 }

@@ -20,7 +20,7 @@ export const TIERS = {
 export const PRICES = {
   'anthropic:claude-sonnet-4-6': { inputPer1M: 3, outputPer1M: 15, source: 'plan §21.2' },
   'anthropic:claude-haiku-4-5': { inputPer1M: 1, outputPer1M: 5, source: 'estimate' },
-  'azure:gpt-5.2': { inputPer1M: 0, outputPer1M: 0, source: 'TBD — confirm with Azure rep (§21.2)' },
+  'azure:gpt-5.2-codex-2026-01-22': { inputPer1M: 0, outputPer1M: 0, source: 'TBD — confirm with Azure rep (§21.2)' },
 };
 
 /**
