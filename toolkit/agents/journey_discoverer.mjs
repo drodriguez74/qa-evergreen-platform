@@ -23,6 +23,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { loadProfile } from '../profile.mjs';
+import { callGateway } from '../gateway-client.mjs';
 
 const profile = loadProfile();
 const journeyId = process.argv[2];
@@ -282,26 +283,19 @@ Below are icon-only / short-text candidate elements detected in the DOM. Each ha
 ${JSON.stringify(slim)}
 Use the screenshot to understand each candidate visually, then choose the SINGLE candidate index that best matches the intended target. Never invent coordinates or selectors. Reply with STRICT JSON only:
 {"matchIndex": <i or null>, "confidence": <0..1>, "reason": "<short>", "recommendedAriaLabel": "<the aria-label this element should have, e.g. the intended name>"}`;
-  let res;
+  let data;
   try {
-    res = await fetch(`${profile.gateway.url}/v1/messages`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        repo: profile.name,
-        tier: 'reasoning',
-        max_tokens: 400,
-        messages: [{ role: 'user', content: [
-          { type: 'text', text },
-          { type: 'image', source: { type: 'base64', media_type: 'image/png', data: b64 } },
-        ] }],
-        payload_types: ['screenshot', 'a11y-tree'],
-      }),
+    data = await callGateway(profile.gateway.url, {
+      repo: profile.name,
+      tier: 'reasoning',
+      max_tokens: 400,
+      messages: [{ role: 'user', content: [
+        { type: 'text', text },
+        { type: 'image', source: { type: 'base64', media_type: 'image/png', data: b64 } },
+      ] }],
+      payload_types: ['screenshot', 'a11y-tree'],
     });
   } catch (e) { return { error: `gateway unreachable: ${e.message}` }; }
-  if (!res.ok) return { error: `gateway ${res.status}` };
-  let data;
-  try { data = await res.json(); } catch { return { error: 'gateway non-JSON' }; }
   const raw = typeof data.output === 'string' ? data.output : JSON.stringify(data.output ?? '');
   const m = raw.match(/\{[\s\S]*\}/);
   if (!m) return { error: 'model returned no JSON' };

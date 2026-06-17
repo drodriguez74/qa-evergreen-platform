@@ -11,6 +11,8 @@
 // the agent is always exercisable — and the contrast between the two modes is
 // itself informative (pure string matching can't resolve synonyms; the model can).
 
+import { callGateway } from '../gateway-client.mjs';
+
 const GATEWAY_URL_DEFAULT = 'http://localhost:4100';
 
 // --- string similarity (deterministic fallback) ----------------------------
@@ -81,21 +83,15 @@ Pick the SINGLE node that is the intended target of the broken locator (an acces
 drift of the same control). Return its role + accessible name and a calibrated confidence 0..1.
 If none is a clear equivalent, set confidence below 0.5 (abstain). Call propose_heal once.`;
 
-  const res = await fetch(`${gatewayUrl}/v1/messages`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      repo: repo || 'fundflow',
-      tier: 'fast',
-      messages: [{ role: 'user', content: prompt }],
-      tool: HEAL_TOOL,
-      tool_choice: { type: 'tool', name: 'propose_heal' },
-      max_tokens: 512,
-      payload_types: ['locator', 'a11y-tree'],
-    }),
+  const data = await callGateway(gatewayUrl, {
+    repo: repo || 'fundflow',
+    tier: 'fast',
+    messages: [{ role: 'user', content: prompt }],
+    tool: HEAL_TOOL,
+    tool_choice: { type: 'tool', name: 'propose_heal' },
+    max_tokens: 512,
+    payload_types: ['locator', 'a11y-tree'],
   });
-  if (!res.ok) throw new Error(`gateway ${res.status}`);
-  const data = await res.json();
   const o = data.output;
   return {
     role: o.role, name: o.name,

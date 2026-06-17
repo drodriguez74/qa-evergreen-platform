@@ -17,6 +17,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadProfile } from '../profile.mjs';
+import { callGateway } from '../gateway-client.mjs';
 
 const profile = loadProfile();
 if (!profile.api?.openapi) throw new Error(`profile ${profile.name} has no api.openapi`);
@@ -74,21 +75,16 @@ RULES:
 }
 
 async function main() {
-  const res = await fetch(`${profile.gateway.url}/v1/messages`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      repo: profile.name,
-      tier: 'reasoning',
-      messages: [{ role: 'user', content: prompt() }],
-      tool: TOOL,
-      tool_choice: { type: 'tool', name: 'emit_api_tests' },
-      max_tokens: 8000,
-      payload_types: ['openapi'],
-    }),
+  const data = await callGateway(profile.gateway.url, {
+    repo: profile.name,
+    tier: 'reasoning',
+    messages: [{ role: 'user', content: prompt() }],
+    tool: TOOL,
+    tool_choice: { type: 'tool', name: 'emit_api_tests' },
+    max_tokens: 8000,
+    payload_types: ['openapi'],
   });
-  if (!res.ok) throw new Error(`gateway ${res.status}: ${(await res.text().catch(() => '')).slice(0, 200)}`);
-  const out = (await res.json()).output;
+  const out = data.output;
   if (!out?.specs?.length) throw new Error('gateway returned no api specs');
 
   mkdirSync(OUT, { recursive: true });

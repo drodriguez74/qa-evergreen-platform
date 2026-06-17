@@ -29,6 +29,7 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadProfile } from '../profile.mjs';
+import { callGateway } from '../gateway-client.mjs';
 
 const profile = loadProfile();
 const WORK_DIR = profile.workDir;
@@ -251,27 +252,21 @@ async function gatewayLabel(finding, context) {
     payload_types: ['trace'],
   };
 
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 20000);
+  let json;
   try {
-    const res = await fetch(`${url}/v1/messages`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body),
-      signal: ctrl.signal,
-    });
-    if (res.status === 429) {
-      const e = new Error('quota_exceeded');
-      e.rateLimited = true;
-      throw e;
+    json = await callGateway(url, body); // retry/backoff handled
+  } catch (e) {
+    // Persistent 429 → surface as rate-limited so the caller can halt; any other
+    // failure (502 etc, exhausted) → return null so the caller falls back deterministically.
+    if (/\b429\b/.test(e.message)) {
+      const err = new Error('quota_exceeded');
+      err.rateLimited = true;
+      throw err;
     }
-    if (!res.ok) return null; // 502 etc → caller falls back deterministically
-    const json = await res.json();
-    const label = json?.output?.aria_label;
-    return typeof label === 'string' && label.trim() ? label.trim() : null;
-  } finally {
-    clearTimeout(timer);
+    return null;
   }
+  const label = json?.output?.aria_label;
+  return typeof label === 'string' && label.trim() ? label.trim() : null;
 }
 
 // ---------------------------------------------------------------------------

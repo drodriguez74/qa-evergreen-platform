@@ -28,6 +28,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadProfile } from '../profile.mjs';
+import { callGateway } from '../gateway-client.mjs';
 
 const profile = loadProfile();
 const onlyId = process.argv[2];
@@ -114,21 +115,15 @@ Decide the NEXT action. Call verify_decision exactly once.
 - If the step is an ASSERTION ("X is visible", "proves ...") and the asserted node IS present above,
   set status="pass". If it is clearly absent and cannot appear, set status="fail".
 - Use command="none", role="", name="", value="" for pass/fail.`;
-  const res = await fetch(`${profile.gateway.url}/v1/messages`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      repo: profile.name,
-      tier: 'reasoning',
-      max_tokens: 600,
-      messages: [{ role: 'user', content: text }],
-      tool: DECIDE_TOOL,
-      tool_choice: { type: 'tool', name: 'verify_decision' },
-      payload_types: ['a11y-tree'],
-    }),
+  const data = await callGateway(profile.gateway.url, {
+    repo: profile.name,
+    tier: 'reasoning',
+    max_tokens: 600,
+    messages: [{ role: 'user', content: text }],
+    tool: DECIDE_TOOL,
+    tool_choice: { type: 'tool', name: 'verify_decision' },
+    payload_types: ['a11y-tree'],
   });
-  if (!res.ok) throw new Error(`gateway ${res.status}: ${(await res.text().catch(() => '')).slice(0, 200)}`);
-  const data = await res.json();
   if (!data.output?.status) throw new Error('gateway returned no decision');
   return data.output;
 }
@@ -184,7 +179,7 @@ async function verifyIntent(intent) {
       const snap = snapshot();
       let d;
       try { d = await decide(intent, line, snap); }
-      catch (e) { detail = `gateway decide failed: ${e.message} [cause: ${e.cause?.code || e.cause?.message || e.cause || '?'}] [snap: ${snap?.error ? 'ERR ' + snap.error : 'ok'}]`; break outer; }
+      catch (e) { detail = `gateway decide failed: ${e.message} [snap: ${snap?.error ? 'ERR ' + snap.error : 'ok'}]`; break outer; }
       const outcome = execDecision(d);
       if (outcome === 'pass') { verdict = 'pass'; detail = redact(line); continue outer; }
       if (outcome === 'fail') { verdict = 'fail'; detail = `refuted: ${redact(line)} (${d.reason})`; break outer; }

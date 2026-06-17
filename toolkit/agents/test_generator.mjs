@@ -30,10 +30,11 @@
  * Usage: QA_PROFILE=orangehrm node test_generator.mjs [journeyId|intentId]
  */
 
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadProfile } from '../profile.mjs';
+import { callGateway } from '../gateway-client.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..', '..');
@@ -185,8 +186,44 @@ const TOOL = {
   },
 };
 
-function prompt(facts) {
-  return `You are the platform's test generator. Compile this DISCOVERED journey trace into a **Cucumber-JS** suite: a Gherkin feature, step definitions, and Playwright Page Objects (one per screen). Call emit_cucumber exactly once.
+// Collect the CURRENT contents of any Page Object files already on disk in the
+// flat pages/ dir. These are SHARED across journeys (e.g. pages/LoginPage.ts is
+// reused by every journey that logs in). When this generation re-emits a class
+// that already exists, the model must return the UNION of methods/locators —
+// keeping every existing one verbatim and adding only what's missing — so a
+// sibling journey's steps never lose a method they call (the flat-layout
+// collision: a second journey clobbering pages/LoginPage.ts and dropping
+// navigate()/assertDashboardVisible() that login-happy-path still calls).
+function existingPageObjects(pagesDir) {
+  if (!existsSync(pagesDir)) return [];
+  const out = [];
+  for (const fname of readdirSync(pagesDir)) {
+    if (!fname.endsWith('.ts')) continue;
+    try {
+      out.push({ filename: fname, contents: readFileSync(join(pagesDir, fname), 'utf8') });
+    } catch { /* ignore unreadable */ }
+  }
+  return out;
+}
+
+function prompt(facts, existingPages = []) {
+  const mergeBlock = existingPages.length
+    ? `
+
+EXISTING PAGE OBJECTS (SHARED, MERGE-AWARE — CRITICAL):
+This is a FLAT layout where Page Object files are REUSED across journeys. The
+files below ALREADY EXIST on disk and are imported by OTHER journeys' step
+definitions. If you emit a Page Object class whose filename matches one of these,
+you MUST return the UNION: keep EVERY existing method and locator property
+verbatim (same names, same signatures, same bodies), and ADD only the new
+method(s) this journey needs. NEVER remove, rename, or alter an existing method —
+a sibling journey's steps still call them (e.g. dropping LoginPage.navigate()
+breaks the login journey with "loginPage.navigate is not a function"). For any
+filename NOT listed below, emit a fresh class as usual.
+${existingPages.map((p) => `\n----- ${p.filename} (current contents — preserve all of these methods) -----\n${p.contents}`).join('\n')}
+`
+    : '';
+  return `You are the platform's test generator. Compile this DISCOVERED journey trace into a **Cucumber-JS** suite: a Gherkin feature, step definitions, and Playwright Page Objects (one per screen). Call emit_cucumber exactly once.${mergeBlock}
 
 App profile: ${profile.name}. Journey id: "${facts.id}". Title: "${facts.title}" (role ${facts.role}).
 This is the STANDARD FLAT Cucumber layout. Your files land here:
@@ -249,25 +286,21 @@ HARD RULES:
 - Valid, runnable TypeScript. One Page Object class per screen.`;
 }
 
-async function generate(facts) {
-  const res = await fetch(`${profile.gateway.url}/v1/messages`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      repo: profile.name,
-      tier: 'reasoning',
-      messages: [{ role: 'user', content: prompt(facts) }],
-      tool: TOOL,
-      tool_choice: { type: 'tool', name: 'emit_cucumber' },
-      max_tokens: 8000,
-      payload_types: ['trace', 'a11y-tree'],
-    }),
+async function generate(facts, existingPages = []) {
+  // callGateway wraps POST /v1/messages with retry/backoff + error surfacing
+  // (the agent→gateway hop). It throws on exhaustion; no manual res.ok handling.
+  const data = await callGateway(profile.gateway.url, {
+    repo: profile.name,
+    tier: 'reasoning',
+    messages: [{ role: 'user', content: prompt(facts, existingPages) }],
+    tool: TOOL,
+    tool_choice: { type: 'tool', name: 'emit_cucumber' },
+    max_tokens: 8000,
+    payload_types: ['trace', 'a11y-tree'],
   });
-  if (!res.ok) throw new Error(`gateway ${res.status}: ${(await res.text().catch(() => '')).slice(0, 200)}`);
-  const data = await res.json();
-  const o = data.output;
-  if (!o?.feature || !o?.steps || !Array.isArray(o.pages)) throw new Error('gateway returned an incomplete artifact set');
-  return { artifacts: o, meta: { provider: data.provider, model: data.model } };
+  const out = data.output;
+  if (!out?.feature || !out?.steps || !Array.isArray(out.pages)) throw new Error('gateway returned an incomplete artifact set');
+  return { artifacts: out, meta: { provider: data.provider, model: data.model } };
 }
 
 // --- support scaffolding (idempotent — written once if absent) --------------
@@ -364,14 +397,6 @@ async function main() {
   }
 
   const facts = factsFromTrace(trace);
-  let result;
-  try {
-    result = await generate(facts);
-  } catch (err) {
-    console.error(`generate: gateway generation failed (${err.message}).`);
-    console.error(`generate: start the model gateway at ${profile.gateway.url} (toolkit/gateway) and retry.`);
-    process.exit(2);
-  }
 
   // FLAT Cucumber layout — features/, steps/, pages/, support/ all under one root.
   const featuresDir = join(CUCUMBER_ROOT, 'features');
@@ -380,6 +405,19 @@ async function main() {
   mkdirSync(featuresDir, { recursive: true });
   mkdirSync(stepsDir, { recursive: true });
   mkdirSync(pagesDir, { recursive: true });
+
+  // Read SHARED page objects already on disk so the model can return the union
+  // (preserve existing methods, add new ones) instead of clobbering them.
+  const existingPages = existingPageObjects(pagesDir);
+
+  let result;
+  try {
+    result = await generate(facts, existingPages);
+  } catch (err) {
+    console.error(`generate: gateway generation failed (${err.message}).`);
+    console.error(`generate: start the model gateway at ${profile.gateway.url} (toolkit/gateway) and retry.`);
+    process.exit(2);
+  }
 
   // Scaffold shared support/config once (idempotent — never clobbers edits).
   scaffoldSupport(facts.baseURL);

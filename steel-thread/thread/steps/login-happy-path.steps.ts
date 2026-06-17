@@ -3,17 +3,16 @@ import { expect } from '@playwright/test';
 import { World } from '../support/world.js';
 import { LoginPage } from '../pages/LoginPage.js';
 
-Given('the admin is on the OrangeHRM login page', async function (this: World) {
-  const loginPage = new LoginPage(this.page);
-  await loginPage.navigate(this.baseURL);
+Given('I am on the OrangeHRM login page', async function (this: World) {
+  await this.page.goto(new URL('/web/index.php/auth/login', this.baseURL).toString());
 });
 
-When('the admin signs in with username {string} and password {string}', async function (this: World, username: string, password: string) {
+When('I sign in as Admin with password {string}', async function (this: World, password: string) {
   const loginPage = new LoginPage(this.page);
-  await loginPage.login(username, password);
+  await loginPage.login('Admin', password);
 });
 
-Then('the dashboard heading should be visible', async function (this: World) {
+Then('I should see the Dashboard', async function (this: World) {
   const loginPage = new LoginPage(this.page);
   await loginPage.assertDashboardVisible();
 });

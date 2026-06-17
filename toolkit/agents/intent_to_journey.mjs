@@ -34,6 +34,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadProfile } from '../profile.mjs';
+import { callGateway } from '../gateway-client.mjs';
 
 const profile = loadProfile();
 const intentId = process.argv[2];
@@ -138,21 +139,15 @@ Decide the NEXT action. Call scaffold_decision exactly once.
 - Set is_gating="true" on the action that should CAUSE a verifiable state change, and put a short
   caused_state like  link "Bulk"  or  heading "Dashboard"  describing the node that then appears.
 - status="done" when the intent's end-state node is already present; status="fail" if it cannot be reached.`;
-  const res = await fetch(`${profile.gateway.url}/v1/messages`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      repo: profile.name,
-      tier: 'reasoning',
-      max_tokens: 700,
-      messages: [{ role: 'user', content: text }],
-      tool: SCAFFOLD_TOOL,
-      tool_choice: { type: 'tool', name: 'scaffold_decision' },
-      payload_types: ['a11y-tree'],
-    }),
+  const data = await callGateway(profile.gateway.url, {
+    repo: profile.name,
+    tier: 'reasoning',
+    max_tokens: 700,
+    messages: [{ role: 'user', content: text }],
+    tool: SCAFFOLD_TOOL,
+    tool_choice: { type: 'tool', name: 'scaffold_decision' },
+    payload_types: ['a11y-tree'],
   });
-  if (!res.ok) throw new Error(`gateway ${res.status}: ${(await res.text().catch(() => '')).slice(0, 200)}`);
-  const data = await res.json();
   if (!data.output?.status) throw new Error('gateway returned no decision');
   return data.output;
 }
