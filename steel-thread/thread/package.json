@@ -10,6 +10,7 @@
     "compile": "node trace_compiler.mjs",
     "auth:capture": "node auth_capture.mjs",
     "test": "playwright test",
+    "test:cucumber": "NODE_OPTIONS='--import tsx' cucumber-js",
     "test:react": "playwright test --project=react",
     "test:angular": "playwright test --project=angular",
     "test:api": "playwright test --config=api.config.ts",
@@ -26,6 +27,8 @@
     "typescript": "^5.6.0"
   },
   "dependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "tsx": "^4.22.4",
     "zod": "^4.4.3"
   }
 }

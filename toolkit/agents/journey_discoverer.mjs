@@ -103,19 +103,42 @@ function parseSnapshotText(snap) {
   return out;
 }
 
+// Synthetic positional names that profile_init emits for unlabelled textboxes in
+// poor-accessibility apps (it can't read a real accessible name, so it assigns
+// "Username"/"Password" by position). These let the nth-of-role tier map such a
+// synthetic name back to the ordinal it stands for.
+const POSITIONAL_NAMES = ['username', 'user', 'email', 'login', 'account', 'phone'];
+const POSITIONAL_PASS = ['password', 'passcode', 'pin'];
+
+// Map a synthetic profile_init name to an ordinal among same-role elements:
+//   textbox/searchbox "Username"/user/email/login → nth 0
+//   textbox/searchbox "Password"/passcode/pin     → nth 1
+// Returns null when the name carries no positional hint (then nth-of-role can't apply).
+function inferNthFromName(name, role, refs) {
+  if (!name) return null;
+  const lower = name.toLowerCase().trim();
+  if (role === 'textbox' || role === 'searchbox') {
+    if (POSITIONAL_NAMES.some((p) => lower.includes(p))) return 0;
+    if (POSITIONAL_PASS.some((p) => lower.includes(p))) return 1;
+  }
+  return null;
+}
+
 // Resolve a target to { ref, locator } via the resilience-ranked ladder.
 // locator = { strategy, role, name, value, debt }.
 // Strategies (most → least resilient):
-//   role+name → name → text → placeholder → testid/id → unresolved
+//   role+name → name → text → placeholder → nth-of-role → testid/id → unresolved
 function resolveTarget(t, snap) {
   const refs = snap?.data?.refs ?? {};
   const text = parseSnapshotText(snap);
   const want = (t.name ?? '').trim();
 
-  // 1. role + name (preferred; identical to legacy behaviour)
+  // 1. role + name (preferred; identical to legacy behaviour). Trim both sides:
+  //    some apps surface a leading/trailing-padded accessible name (e.g. " Login ")
+  //    that would otherwise miss an exact, untrimmed comparison.
   if (t.role && want) {
     for (const [ref, node] of Object.entries(refs)) {
-      if (node.role === t.role && node.name === want) {
+      if (node.role === t.role && (node.name ?? '').trim() === want) {
         return { ref, locator: { strategy: 'role+name', role: t.role, name: want, value: null, debt: false } };
       }
     }
@@ -124,7 +147,7 @@ function resolveTarget(t, snap) {
   // 2. name on ANY role (accessible name drifted off the expected role)
   if (want) {
     for (const [ref, node] of Object.entries(refs)) {
-      if (node.name === want) {
+      if ((node.name ?? '').trim() === want) {
         return { ref, locator: { strategy: 'name', role: node.role, name: want, value: null, debt: true } };
       }
     }
@@ -158,6 +181,23 @@ function resolveTarget(t, snap) {
       const accName = refs[ref]?.name ?? '';
       if (accName) continue; // had a real accessible name → tier 1/2 would've caught it
       return { ref, locator: { strategy: 'placeholder', role: info.role, name: null, value: want, debt: true } };
+    }
+  }
+
+  // 4b. nth-of-role — multiple elements share a role with NO usable accessible
+  //     name (poor-ARIA apps: unlabelled textboxes). Resolve by ordinal position.
+  //     The journey carries a SYNTHETIC name (e.g. "Username"/"Password" from
+  //     profile_init's positional fallback); inferNthFromName maps it to an ordinal.
+  if (t.role) {
+    const nth = inferNthFromName(want, t.role, refs);
+    if (nth != null) {
+      // Only degrade to position when the role genuinely lacks unique names:
+      // collect same-role refs in document order (refs keys are insertion-ordered).
+      const sameRole = Object.entries(refs).filter(([, node]) => node.role === t.role);
+      if (sameRole.length > 1 && nth < sameRole.length) {
+        const [ref] = sameRole[nth];
+        return { ref, locator: { strategy: 'nth-of-role', role: t.role, name: want || null, value: null, nth, debt: true } };
+      }
     }
   }
 

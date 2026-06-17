@@ -32,3 +32,6 @@ toolkit/gateway/audit/
 # ── Local tooling ─────────────────────────────────────────────────────────
 .claude/settings.local.json
 .DS_Store
+
+# Office intake — internal docs/audit (internal URLs); never commit.
+docs/office-intake/
